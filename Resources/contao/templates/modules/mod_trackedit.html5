@@ -1,0 +1,32 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<?php if ($this->error): ?>
+<?php echo $this->error; ?>
+<?php endif; ?>
+
+<?php if ($this->fields): ?>
+
+<form<?php if ($this->action): ?> action="<?php echo $this->action; ?>"<?php endif; ?> id="<?php echo $this->formId; ?>" method="<?php echo $this->method; ?>" enctype="<?php echo $this->enctype; ?>"<?php echo $this->attributes; ?><?php echo $this->novalidate; ?>>
+  <div class="formbody">
+      <input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formSubmit; ?>">
+      <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+
+      <?php if ($this->errors): ?>
+        <p class="error"><?php echo $this->errors; ?></p>
+      <?php endif; ?>
+
+      <?php echo $this->fields; ?>
+
+      <div class="widget-submit clearfix">
+        <input type="submit" value="<?php echo $this->submitTitle; ?>" class="button right">
+      </div>
+
+  </div>
+</form>
+
+<?php endif; ?>
+
+<?php $this->endblock(); ?>
+

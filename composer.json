@@ -1,0 +1,44 @@
+{
+  "name": "con4gis/tracking",
+  "description": "Tracking extension for con4gis_maps3",
+  "keywords": ["con4gis", "tracking", "contao", "c4g", "maps", "gps"],
+  "type": "contao-bundle",
+  "homepage": "https://con4gis.org",
+  "license": "LGPL-3.0+",
+  "authors":[
+    {
+      "name":"Küstenschmiede GmbH Software & Design",
+      "homepage":"https://kuestenschmiede.de"
+    }
+  ],
+  "require": {
+    "con4gis/core": "^2.0"
+  },
+  "conflict": {
+    "contao/core": "*",
+    "contao/manager-plugin": "<2.0 || >=3.0"
+  },
+  "support": {
+    "issues": "https://github.com/Kuestenschmiede/TrackingBundle/issues"
+  },
+  "autoload": {
+    "psr-4": {
+      "con4gis\\TrackingBundle\\": ""
+    },
+    "classmap": [
+      "Resources/contao/"
+    ],
+    "exclude-from-classmap": [
+      "Resources/contao/config/",
+      "Resources/contao/dca/",
+      "Resources/contao/languages/",
+      "Resources/contao/templates/"
+    ]
+  },
+  "config": {
+    "preferred-install": "dist"
+  },
+  "extra": {
+    "contao-manager-plugin": "con4gis\\TrackingBundle\\ContaoManager\\Plugin"
+  }
+}

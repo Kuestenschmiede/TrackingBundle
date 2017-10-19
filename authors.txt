@@ -1,0 +1,6 @@
+Authors ordered by first contribution.
+
+Matthias Eilers (http://kuestenschmiede.de)
+Janosch Oltmanns (http://janosch-oltmanns.de)
+Tobias Dobbrunz (http://kuestenschmiede.de)
+Dirk Trauernicht (http://kuestenschmiede.de)

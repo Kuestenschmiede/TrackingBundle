@@ -1,0 +1,7 @@
+<script>
+
+var setPosition = function(latitude, longitude, object) {
+  console.log(latitude);
+};
+
+</script>

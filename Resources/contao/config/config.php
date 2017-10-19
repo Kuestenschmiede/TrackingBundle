@@ -1,0 +1,93 @@
+<?php
+
+/**
+ * con4gis - the gis-kit
+ *
+ * @version   php 5
+ * @package   con4gis
+ * @author    con4gis contributors (see "authors.txt")
+ * @license   GNU/LGPL http://opensource.org/licenses/lgpl-3.0.html
+ * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2011 - 2017.
+ * @link      https://www.kuestenschmiede.de
+ */
+
+
+/**
+ * Global settings
+ */
+$GLOBALS['con4gis_tracking_extension']['installed']    = true;
+$GLOBALS['con4gis_tracking_extension']['version']      = '2.2.2-snapshot';
+
+/**
+ * Frontend Modules
+ */
+array_insert( $GLOBALS['FE_MOD']['con4gis'], $GLOBALS['con4gis_maps_extension']['installed']?1:0, array
+  (
+  'c4g_ssologin'   => 'con4gis\TrackingBundle\Resources\contao\modules\ModuleSsoLogin',
+  'c4g_tracklist'  => 'con4gis\TrackingBundle\Resources\contao\modules\ModuleTrackList',
+  'c4g_trackedit'  => 'con4gis\TrackingBundle\Resources\contao\modules\ModuleTrackEdit'
+  )
+);
+
+
+/**
+ * Backend Modules
+ */
+array_insert($GLOBALS['BE_MOD']['con4gis'], 6, array
+(
+	'c4g_tracking' => array
+	(
+        'tables'      => array
+        (
+            'tl_c4g_tracking',
+            'tl_c4g_tracking_devices',
+            'tl_c4g_tracking_pois',
+            'tl_c4g_tracking_tracks',
+            'tl_c4g_tracking_positions',
+            'tl_c4g_tracking_boxes',
+            'tl_c4g_tracking_box_locations'
+        ),
+        'icon' => 'system/modules/con4gis_tracking/assets/tracking.png',
+    )
+));
+
+
+$GLOBALS['c4g_tracking_devicetypes'] = array();
+
+// contao 4 api
+if (class_exists('con4gis\ApiBundle\Controller\ApiController') &&  (version_compare( VERSION, '4', '>=' )))
+{
+    $GLOBALS['con4gis_tracking_extension']['apiBaseUrl'] = 'con4gis/api';
+}
+else
+{
+    $GLOBALS['con4gis_tracking_extension']['apiBaseUrl'] = 'system/modules/con4gis_core/api/index.php';
+}
+
+/**
+ * Hooks
+ */
+$GLOBALS['TL_HOOKS']['c4gAddLocationsParent']['tracking'] = array('con4gis\TrackingBundle\Resources\contao\classes\TrackingFrontend','addLocations');
+$GLOBALS['TL_HOOKS']['c4gPostGetInfoWindowContent']['tracking'] = array('con4gis\TrackingBundle\Resources\contao\classes\TrackingFrontend','getInfoWindowContent');
+$GLOBALS['TL_CRON']['daily'][] = array('con4gis\TrackingBundle\Resources\contao\classes\TrackingFrontend', 'runCronJob');
+
+/**
+ * Rest-API
+ */
+$GLOBALS['TL_API']['trackingService'] = 'TrackingService';
+
+$GLOBALS['c4g_locationtypes'][] = 'tPois';
+$GLOBALS['c4g_locationtypes'][] = 'tTracks';
+$GLOBALS['c4g_locationtypes'][] = 'tLive';
+
+
+/**
+ * Models
+ */
+$GLOBALS['TL_MODELS']['tl_c4g_tracking_boxes'] ='con4gis\TrackingBundle\Resources\contao\models\C4gTrackingBoxesModel';
+$GLOBALS['TL_MODELS']['tl_c4g_tracking_boxlocations'] ='con4gis\TrackingBundle\Resources\contao\models\C4gTrackingBoxlocationModel';
+$GLOBALS['TL_MODELS']['tl_c4g_tracking_devices'] ='con4gis\TrackingBundle\Resources\contao\models\C4gTrackingDevicesModel';
+$GLOBALS['TL_MODELS']['tl_c4g_tracking'] ='con4gis\TrackingBundle\Resources\contao\models\C4gTrackingModel';
+$GLOBALS['TL_MODELS']['tl_c4g_tracking_pois'] ='con4gis\TrackingBundle\Resources\contao\models\C4gTrackingPoisModel';
+$GLOBALS['TL_MODELS']['tl_c4g_tracking_positions'] ='con4gis\TrackingBundle\Resources\contao\models\C4gTrackingPositionsModel';
+$GLOBALS['TL_MODELS']['tl_c4g_tracking_tracks'] ='con4gis\TrackingBundle\Resources\contao\models\C4gTrackingTracksModel';

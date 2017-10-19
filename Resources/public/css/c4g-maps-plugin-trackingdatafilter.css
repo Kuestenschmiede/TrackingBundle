@@ -1,0 +1,85 @@
+.c4g-layertree ul li {
+    position: relative;
+}
+
+.c4g-layertree .c4g-item-filter-button {
+    height: 20px;
+    width: 18px;
+    display: block;
+    text-indent: -9999px;
+    position: absolute;
+    top: 4px;
+    right: 30px;
+    padding: 0;
+    background: transparent;
+}
+.c4g-content-layerswitcher .c4g-layertree a.c4g-item-filter-button:hover {
+    background: transparent;
+}
+.c4g-content-layerswitcher .c4g-layertree a.c4g-item-filter-button:after {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    font-weight: 100;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    content: "\f0b0";
+    text-indent: 0;
+    position: absolute;
+    left: 0;
+}
+.c4g-content-layerswitcher .c4g-layertree a.c4g-item-filter-button.c4g-inactive:after {
+    color: #a6bbd7;
+    color: rgba(0,60,136,.3);
+}
+
+.c4g-content-layerswitcher .c4g-layertree ul li.c4g-close ul .c4g-item-filter-button {
+    display: none;
+}
+
+.c4g-layertree ul li.c4g-close ul .c4g-item-filter-button {
+    display: none;
+}
+
+.c4g-starboard-filter-wrapper {
+    border: 1px solid #4c6079;
+    border: 1px solid rgba(0,60,136,.7);
+    margin: 10px;
+}
+.c4g-starboard-filter-input-wrapper {
+    padding: 10px;
+}
+.c4g-starboard-filter-input-wrapper input[name="from"],
+.c4g-starboard-filter-input-wrapper input[name="to"] {
+    display: block;
+    width: 100%;
+    color: rgba(0,60,136,.6);
+    outline: 0;
+    height: 1.55em;
+    padding: 1px 5px;
+    border: none;
+    border-radius: 3px;
+    box-sizing: border-box;
+    box-shadow: inset 0 0 3px rgba(0,60,136,.9);
+}
+.c4g-starboard-filter-input-wrapper input[name="to"] {
+    margin-top: 5px;
+}
+.c4g-starboard-filter-input-wrapper input[name="from"].c4g-error,
+.c4g-starboard-filter-input-wrapper input[name="to"].c4g-error {
+    color: rgba(136,10,7,.6);
+    box-shadow: inset 0 0 3px rgba(136, 10, 7, 0.9);
+}
+.c4g-starboard-filter-input-wrapper button[type="submit"] {
+    width: auto;
+    color: #fff;
+    background-color: #4c6079;
+    background-color: rgba(0,60,136,.7);
+    padding: 0 20px;
+    margin-top: 10px;
+}
+
+button.c4g-starboard-view-trigger-filter:before {
+    content: "\f0b0";
+}

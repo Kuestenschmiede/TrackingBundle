@@ -1,0 +1,33 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<?php if ($this->data): ?>
+<ul class="tracking-list">
+<?php foreach ($this->data as $entry): ?>
+<li class="entry type-<?php echo $entry['type']; ?>">
+  <?php if ($entry['forDelete']): ?><del><?php endif; ?>
+  <?php if ($entry['type'] == 'track'): ?>
+    
+    TRACK
+    <?php if ($entry['count']): ?>
+      [<?php echo $entry['count']; ?> Punkte]
+    <?php endif; ?>
+  <?php endif; ?>
+  <?php if ($entry['type'] == 'poi'): ?>
+    POI
+  <?php endif; ?>
+  <?php if ($entry['forDelete']): ?></del><?php endif; ?>
+
+  <?php echo $entry['name']; ?>
+  <?php echo $entry['datim']; ?>
+  <?php if ($entry['editHref']): ?>
+  <a href="<?php echo $entry['editHref']; ?>">Bearbeiten</a>
+  <?php endif; ?>
+</li>
+<?php endforeach; ?>
+</ul>
+<?php endif; ?>
+
+<?php $this->endblock(); ?>
+
