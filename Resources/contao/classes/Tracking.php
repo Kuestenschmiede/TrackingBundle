@@ -13,6 +13,8 @@
 
 namespace con4gis\TrackingBundle\Resources\contao\classes;
 
+use Contao\System;
+
 /**
  * Class Tracking
  * @package c4g
@@ -146,7 +148,8 @@ class Tracking extends \Controller
     $arrTrackingPoi['poiId'] = $objPoi->id;
     $arrTrackingPoi['poiUuid'] = $strUuid;
 
-    $arrTrackingPoi['version'] = $GLOBALS['con4gis_tracking_extension']['version'];
+    $packages = System::getContainer()->getParameter('kernel.packages');
+    $arrTrackingPoi['version'] = $packages['con4gis/tracking'];
 
     return $arrTrackingPoi;
 
@@ -187,7 +190,8 @@ class Tracking extends \Controller
     $arrTrackingTrack['trackId'] = $objTrack->id;
     $arrTrackingTrack['trackUuid'] = $strUuid;
 
-    $arrTrackingTrack['version'] = $GLOBALS['con4gis_tracking_extension']['version'];
+    $packages = System::getContainer()->getParameter('kernel.packages');
+    $arrTrackingTrack['version'] = $packages['con4gis/tracking'];
 
     return $arrTrackingTrack;
 
@@ -237,7 +241,8 @@ class Tracking extends \Controller
       $arrTrackingConfig['message'] = "no tracking configuration";
     }
 
-    $arrTrackingConfig['version'] = $GLOBALS['con4gis_tracking_extension']['version'];
+    $packages = System::getContainer()->getParameter('kernel.packages');
+    $arrTrackingConfig['version'] = $packages['con4gis/tracking'];
 
     return $arrTrackingConfig;
 

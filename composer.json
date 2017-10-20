@@ -1,6 +1,6 @@
 {
   "name": "con4gis/tracking",
-  "description": "Tracking extension for con4gis_maps3",
+  "description": "Tracking extension for con4gis-Maps",
   "keywords": ["con4gis", "tracking", "contao", "c4g", "maps", "gps"],
   "type": "contao-bundle",
   "homepage": "https://con4gis.org",

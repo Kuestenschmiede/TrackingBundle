@@ -3,7 +3,7 @@
 /**
  * con4gis - the gis-kit
  *
- * @version   php 5
+ * @version   php 7
  * @package   con4gis
  * @author    con4gis contributors (see "authors.txt")
  * @license   GNU/LGPL http://opensource.org/licenses/lgpl-3.0.html
@@ -15,13 +15,12 @@
 /**
  * Global settings
  */
-$GLOBALS['con4gis_tracking_extension']['installed']    = true;
-$GLOBALS['con4gis_tracking_extension']['version']      = '2.2.2-snapshot';
+$GLOBALS['con4gis']['tracking']['installed'] = true;
 
 /**
  * Frontend Modules
  */
-array_insert( $GLOBALS['FE_MOD']['con4gis'], $GLOBALS['con4gis_maps_extension']['installed']?1:0, array
+array_insert( $GLOBALS['FE_MOD']['con4gis'], $GLOBALS['con4gis']['maps']['installed']?1:0, array
   (
   'c4g_ssologin'   => 'con4gis\TrackingBundle\Resources\contao\modules\ModuleSsoLogin',
   'c4g_tracklist'  => 'con4gis\TrackingBundle\Resources\contao\modules\ModuleTrackList',
@@ -47,22 +46,13 @@ array_insert($GLOBALS['BE_MOD']['con4gis'], 6, array
             'tl_c4g_tracking_boxes',
             'tl_c4g_tracking_box_locations'
         ),
-        'icon' => 'system/modules/con4gis_tracking/assets/tracking.png',
+        //'icon' => 'system/modules/con4gis_tracking/assets/tracking.png',
     )
 ));
 
 
 $GLOBALS['c4g_tracking_devicetypes'] = array();
-
-// contao 4 api
-if (class_exists('con4gis\ApiBundle\Controller\ApiController') &&  (version_compare( VERSION, '4', '>=' )))
-{
-    $GLOBALS['con4gis_tracking_extension']['apiBaseUrl'] = 'con4gis/api';
-}
-else
-{
-    $GLOBALS['con4gis_tracking_extension']['apiBaseUrl'] = 'system/modules/con4gis_core/api/index.php';
-}
+$GLOBALS['con4gis']['tracking']['apiBaseUrl'] = 'con4gis/api';
 
 /**
  * Hooks

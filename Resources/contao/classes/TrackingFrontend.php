@@ -326,7 +326,7 @@ class TrackingFrontend extends \Frontend
                       if ($child['raw']->liveTrackingType == "tLive_group")
                       {
 
-                        $strUrl = $GLOBALS['con4gis_tracking_extension']['apiBaseUrl'] . "/trackingService?method=getLive&maps=" . $child['id'] . "&useGroup=" . $child['id'];
+                        $strUrl = $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . "/trackingService?method=getLive&maps=" . $child['id'] . "&useGroup=" . $child['id'];
                           if ($child['raw']->isFilterable)
                           {
                               $arrData['filterable'] = array();
@@ -343,7 +343,7 @@ class TrackingFrontend extends \Frontend
                       {
 
                         $arrDevices = deserialize($child['raw']->liveTrackingDevices, true);
-                        $strUrl = $GLOBALS['con4gis_tracking_extension']['apiBaseUrl'] . "/trackingService?method=getLive&maps=" . $child['id'] . "&id[]=" . implode('&id[]=', $arrDevices);
+                        $strUrl = $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . "/trackingService?method=getLive&maps=" . $child['id'] . "&id[]=" . implode('&id[]=', $arrDevices);
                           if ($child['raw']->isFilterable)
                           {
                               $arrData['filterable'] = array();
@@ -362,7 +362,7 @@ class TrackingFrontend extends \Frontend
                       }
                       else
                       {
-                        $strUrl = $GLOBALS['con4gis_tracking_extension']['apiBaseUrl'] . "/trackingService?method=getLive&maps=" . $child['id'] . "";
+                        $strUrl = $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . "/trackingService?method=getLive&maps=" . $child['id'] . "";
                           if ($child['raw']->isFilterable)
                           {
                               $arrData['filterable'] = array();
@@ -471,7 +471,7 @@ class TrackingFrontend extends \Frontend
                 'locationStyle' => $this->checkAndReparseLocationStyle($objDevice->locationStyle ? $objDevice->locationStyle : $child['raw']->locstyle, $child, $objDevice),
                 'data' => array
                 (
-                  'url' => $GLOBALS['con4gis_tracking_extension']['apiBaseUrl'] . "/trackingService?method=getLive&maps=" . $child['id'] . "&id=" . $objDevice->id
+                  'url' => $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . "/trackingService?method=getLive&maps=" . $child['id'] . "&id=" . $objDevice->id
                 ),
                 'settings' => array
                 (
@@ -503,7 +503,7 @@ class TrackingFrontend extends \Frontend
                     'pid' => $child['id'],
                     'id' => $child['id'] . $objBoxes->id,
                     'type' => 'ajax',
-                    'url' => $GLOBALS['con4gis_tracking_extension']['apiBaseUrl'] . '/trackingService?method=getBoxTrack&id=' . $objBoxes->id,
+                    'url' => $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . '/trackingService?method=getBoxTrack&id=' . $objBoxes->id,
                     'name' => $child['name'] ? ($objBoxes->name . ' (' . \Date::parse('d.m.Y H:i', $objBoxes->tstamp) . ')') : '',
                     'hide' => $child['hide'] > 0 ? $child['hide'] : '',
                     'display' => $child['display'],
@@ -518,7 +518,7 @@ class TrackingFrontend extends \Frontend
                             'locationStyle' => $child['raw']->locstyle,
                             'data' => array
                             (
-                                'url' => $GLOBALS['con4gis_tracking_extension']['apiBaseUrl'] . '/trackingService?method=getBoxTrack&id=' . $objBoxes->id,
+                                'url' => $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . '/trackingService?method=getBoxTrack&id=' . $objBoxes->id,
                                 'popup' => array
                                 (
                                     'content' => ''
@@ -670,7 +670,7 @@ class TrackingFrontend extends \Frontend
                     'pid' => $child['id'],
                     'id' => $child['id'] . $objTracks->id,
                     'type' => 'ajax',
-                    'url' => $GLOBALS['con4gis_tracking_extension']['apiBaseUrl'] . '/trackingService?method=getTrack&id=' . $objTracks->uuid,
+                    'url' => $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . '/trackingService?method=getTrack&id=' . $objTracks->uuid,
                     'name' => $child['name'] ? ($objTracks->name . ' (' . \Date::parse('d.m.Y H:i', $objTracks->tstamp) . ')') : '',
                     'hide' => $child['hide'] > 0 ? $child['hide'] : '',
                     'display' => $child['display'],
@@ -685,7 +685,7 @@ class TrackingFrontend extends \Frontend
                             'locationStyle' => $child['raw']->locstyle,
                             'data' => array
                             (
-                                'url' => $GLOBALS['con4gis_tracking_extension']['apiBaseUrl'] . '/trackingService?method=getTrack&id=' . $objTracks->uuid,
+                                'url' => $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . '/trackingService?method=getTrack&id=' . $objTracks->uuid,
                                 'popup' => array
                                 (
                                     'content' => ''
