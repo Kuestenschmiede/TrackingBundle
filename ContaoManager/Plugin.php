@@ -4,6 +4,7 @@ namespace con4gis\TrackingBundle\ContaoManager;
 
 use con4gis\CoreBundle\con4gisCoreBundle;
 use con4gis\MapsBundle\con4gisMapsBundle;
+use con4gis\TrackingBundle\con4gisTrackingBundle;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Config\ConfigInterface;
