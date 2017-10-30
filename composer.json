@@ -1,8 +1,8 @@
 {
   "name": "con4gis/tracking",
+  "type": "contao-bundle",
   "description": "Tracking extension for con4gis-Maps",
   "keywords": ["con4gis", "tracking", "contao", "c4g", "maps", "gps"],
-  "type": "contao-bundle",
   "homepage": "https://con4gis.org",
   "license": "LGPL-3.0+",
   "authors": [
@@ -18,7 +18,8 @@
     }
   ],
   "support": {
-    "email": "support@con4gis.org"
+    "email": "support@con4gis.org",
+    "issues": "https://github.com/Kuestenschmiede/TrackingBundle/issues"
   },
   "require": {
     "con4gis/core": "^2.0"
@@ -26,9 +27,6 @@
   "conflict": {
     "contao/core": "*",
     "contao/manager-plugin": "<2.0 || >=3.0"
-  },
-  "support": {
-    "issues": "https://github.com/Kuestenschmiede/TrackingBundle/issues"
   },
   "autoload": {
     "psr-4": {
