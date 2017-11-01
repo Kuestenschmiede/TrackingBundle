@@ -32,7 +32,7 @@ class TrackingPluginLoader
         }
 
 
-        $GLOBALS['TL_JAVASCRIPT']['c4g-maps-plugin-trackingdatafilter-constant'] = 'sbundles/con4gistracking/js/c4g-maps-plugin-trackingfilter-constant.js';
+        $GLOBALS['TL_JAVASCRIPT']['c4g-maps-plugin-trackingdatafilter-constant'] = 'bundles/con4gistracking/js/c4g-maps-plugin-trackingfilter-constant.js';
 
         $GLOBALS['TL_JAVASCRIPT']['c4g-maps-plugin-trackingdatafilter-jquery-simple-datetimepicker'] = 'bundles/con4gistracking/js/jquery-simple-datetimepicker/1.13.0/jquery.simple-dtpicker.js';
 
