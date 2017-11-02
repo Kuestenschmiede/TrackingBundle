@@ -43,9 +43,9 @@ class TrackingService extends \Controller
         {
             if ($this->$strMethod())
             {
-                return json_encode($this->arrReturn);
+                return $this->arrReturn;
             }
-            return json_encode($this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['method_error'] . $strMethod));
+            return $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['method_error'] . $strMethod);
         }
         else
         {
