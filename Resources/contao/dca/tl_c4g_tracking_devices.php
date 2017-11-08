@@ -292,12 +292,12 @@ class tl_c4g_tracking_devices extends Backend
         if (\Input::post('sendPushNotification') && \Input::post('pushNotificationContent')  && \Input::post('token'))
         {
 
-            \c4g\Tracking::sendPushNotificationByToken($dc->activeRecord->pid, $dc->activeRecord->type, \Input::post('token'), \Input::post('pushNotificationContent'));
+            \con4gis\TrackingBundle\Resources\contao\classes\Tracking::sendPushNotificationByToken($dc->activeRecord->pid, $dc->activeRecord->type, \Input::post('token'), \Input::post('pushNotificationContent'));
         }
 
 
 
-        $objDevice = \c4g\C4gTrackingDevicesModel::findBy('id', $dc->id);
+        $objDevice = \con4gis\TrackingBundle\Resources\contao\models\C4gTrackingDevicesModel::findBy('id', $dc->id);
         $objDevice->sendPushNotification = "";
         $objDevice->pushNotificationContent = "";
         $objDevice->save();

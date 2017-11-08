@@ -310,7 +310,7 @@ class Tracking extends \Controller
   private static function sendGoogleCloudMessage($strToken, $strContent, $objTracking)
   {
     $strGoogleApiKey = $objTracking->pushGcmApiKey;
-    $strGoogleGcmUrl = 'https://android.googleapis.com/gcm/send';
+    $strGoogleGcmUrl = 'https://gcm-http.googleapis.com/gcm/send';
 
 
     $arrGcmHeaders = array
@@ -321,7 +321,7 @@ class Tracking extends \Controller
 
     $arrGcmFields = array
     (
-      'registration_ids' => array
+      'to' => array
       (
         $strToken
       ),
@@ -350,6 +350,8 @@ class Tracking extends \Controller
     $result = curl_exec($ch);
     if ($result === FALSE)
     {
+        $logger = \System::getContainer()->get('logger');
+        $logger->error("Failed while sending push message via curl.");
       //CakeLog::write('log','Gc,notofication failed. Id:' . $id . '; Msg: ' . curl_error($ch));
       //die('Curl failed: ' . curl_error($ch));
     }
