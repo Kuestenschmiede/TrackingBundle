@@ -22,7 +22,8 @@
     "issues": "https://github.com/Kuestenschmiede/TrackingBundle/issues"
   },
   "require": {
-    "con4gis/core": "^2.0"
+    "contao/core-bundle": "^4.4",
+    "con4gis/core": "^2.1"
   },
   "conflict": {
     "contao/core": "*",
