@@ -32,7 +32,7 @@ array_insert( $GLOBALS['FE_MOD']['con4gis'], $GLOBALS['con4gis']['maps']['instal
 /**
  * Backend Modules
  */
-array_insert($GLOBALS['BE_MOD']['con4gis'], 6, array
+array_insert($GLOBALS['BE_MOD']['con4gis'], 7, array
 (
 	'c4g_tracking' => array
 	(
