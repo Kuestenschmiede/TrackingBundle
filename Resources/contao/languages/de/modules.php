@@ -18,7 +18,7 @@ $GLOBALS['TL_LANG']['TMD']['devices'] = array('Geräte', 'Geräte, die im Tracki
 $GLOBALS['TL_LANG']['TMD']['pois'] = array('POIs', 'Getrackte interessante Punkte');
 $GLOBALS['TL_LANG']['TMD']['tracks'] = array('Tracks', 'Getrackte Tracks');
 
-$GLOBALS['TL_LANG']['MOD']['c4g_tracking'] = array('Positionsverfolgung', 'Trackingkonfiguration und Geräteverwaltung');
+$GLOBALS['TL_LANG']['MOD']['c4g_tracking'] = array('Tracking: Konfiguration', 'Trackingkonfiguration und Geräteverwaltung');
 //$GLOBALS['TL_LANG']['MOD']['con4gis_tracking'] = array('Tracking', 'Tracking');
 
 $GLOBALS['TL_LANG']['FMD']['c4g_ssologin']   = array('Tracking (con4gis) - SSO-Login', 'Tracking (con4gis) - SSO-Login');
