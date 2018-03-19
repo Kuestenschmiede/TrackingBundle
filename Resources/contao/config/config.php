@@ -64,7 +64,7 @@ $GLOBALS['TL_CRON']['daily'][] = array('con4gis\TrackingBundle\Resources\contao\
 /**
  * Rest-API
  */
-$GLOBALS['TL_API']['trackingService'] = 'TrackingService';
+$GLOBALS['TL_API']['trackingService'] = 'con4gis\TrackingBundle\Resources\contao\classes\TrackingService';
 
 $GLOBALS['c4g_locationtypes'][] = 'tPois';
 $GLOBALS['c4g_locationtypes'][] = 'tTracks';
