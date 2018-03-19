@@ -7,7 +7,7 @@
  * @package   con4gis
  * @author    con4gis contributors (see "authors.txt")
  * @license   GNU/LGPL http://opensource.org/licenses/lgpl-3.0.html
- * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2011 - 2017.
+ * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2011 - 2018
  * @link      https://www.kuestenschmiede.de
  */
 
@@ -28,7 +28,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_boxes'] = array
             //array('tl_module', 'checkPermission')
         ),
         'onsubmit_callback'           => array(
-            array('\c4g\Core\C4GAutomator', 'purgeApiCache')
+            array('\con4gis\CoreBundle\Resources\contao\classes\C4GAutomator', 'purgeApiCache')
         ),
         'sql' => array
         (
@@ -166,7 +166,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_boxes'] = array
  * Provide miscellaneous methods that are used by the data configuration array.
  * @package   con4gis_tracking
  * @author    Janosch Oltmanns
- * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014 - 2015
+ * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2011 - 2018
  */
 class tl_c4g_tracking_boxes extends Backend
 {

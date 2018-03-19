@@ -4,7 +4,7 @@
   "description": "Tracking extension for con4gis-Maps",
   "keywords": ["con4gis", "tracking", "contao", "c4g", "maps", "gps"],
   "homepage": "https://con4gis.org",
-  "license": "LGPL-3.0+",
+  "license": "LGPL-3.0-or-later",
   "authors": [
     {
       "name": "Kuestenschmiede GmbH Software & Design",
@@ -23,7 +23,7 @@
   },
   "require": {
     "contao/core-bundle": "^4.4",
-    "con4gis/core": "^2.1"
+    "con4gis/core": "^2.3"
   },
   "conflict": {
     "contao/core": "*",

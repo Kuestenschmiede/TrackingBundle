@@ -7,7 +7,7 @@
  * @package   con4gis
  * @author    con4gis contributors (see "authors.txt")
  * @license   GNU/LGPL http://opensource.org/licenses/lgpl-3.0.html
- * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2011 - 2017.
+ * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2011 - 2018
  * @link      https://www.kuestenschmiede.de
  */
 
@@ -32,7 +32,7 @@ array_insert( $GLOBALS['FE_MOD']['con4gis'], $GLOBALS['con4gis']['maps']['instal
 /**
  * Backend Modules
  */
-array_insert($GLOBALS['BE_MOD']['con4gis'], 6, array
+array_insert($GLOBALS['BE_MOD']['con4gis_bricks'], 7, array
 (
 	'c4g_tracking' => array
 	(
