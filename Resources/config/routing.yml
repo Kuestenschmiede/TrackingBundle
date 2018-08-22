@@ -1,5 +1,5 @@
 tracking_service:
-    path: /con4gis/api/trackingService/
+    path: /con4gis/api/trackingService/{methodString}
     defaults:
         _scope: frontend
         _controller: "con4gisTrackingBundle:Tracking:tracking"

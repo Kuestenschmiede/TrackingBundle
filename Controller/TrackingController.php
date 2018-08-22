@@ -19,7 +19,7 @@ use con4gis\TrackingBundle\Resources\contao\classes\TrackingService;
 class TrackingController extends Controller
 {
 
-    public function trackingAction(Request $request) {
+    public function trackingAction(Request $request, $methodString) {
 
         $trackingService = new TrackingService();
 
