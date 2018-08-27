@@ -9,6 +9,7 @@
 namespace con4gis\TrackingBundle\Controller;
 
 
+use Contao\Input;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,13 +20,27 @@ use con4gis\TrackingBundle\Resources\contao\classes\TrackingService;
 class TrackingController extends Controller
 {
 
-    public function trackingAction(Request $request, $methodString) {
+    public function trackingAction(Request $request, $methodString)
+    {
+        /**
+         * Begin Debugging
+         */
+        $debugData = [];
+        $arrParams = array('api_key','date','imei','latitude','longitude','phoneNo','speed','mileage','driverId','temperature','status');
+        foreach ($arrParams as $param) {
+            $debugData[$param] = Input::post($param);
+            if (!$debugData[$param]) {
+                $debugData[$param] = Input::get($param);
+            }
+        }
+        $this->get('logger')->error($request->request->all());
+
+        /**
+         * End Debugging
+         */
 
         $trackingService = new TrackingService();
-
-        return JsonResponse::create($trackingService->generate());
-
-
+        return JsonResponse::create($trackingService->generate($methodString));
     }
 
 

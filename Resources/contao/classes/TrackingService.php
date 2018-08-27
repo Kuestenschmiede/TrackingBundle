@@ -32,26 +32,25 @@ class TrackingService extends \Controller
         }
     }
 
-    public function generate()
+    public function generate($method)
     {
-
         \System::loadLanguageFile('tl_c4g_tracking');
 
         $strMethod = 'tracking' . ucfirst(\Input::get('method'));
-
-        if (method_exists($this, $strMethod))
-        {
-            if ($this->$strMethod())
-            {
+        $method = 'tracking' . ucfirst($method);
+        if (method_exists($this, $method)) {
+            if ($this->$method()) {
                 return $this->arrReturn;
             }
             return $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['method_error'] . $strMethod);
-        }
-        else
-        {
+        } elseif (method_exists($this, $strMethod)) {
+            if ($this->$strMethod()) {
+                return $this->arrReturn;
+            }
+            return $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['method_error'] . $strMethod);
+        } else {
             return false;
         }
-
     }
 
     private function trackingGetLive()

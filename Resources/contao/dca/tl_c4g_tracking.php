@@ -293,7 +293,7 @@ class tl_c4g_tracking extends Backend
     public function deviceButton($row, $href, $label, $title, $icon, $attributes)
     {
 
-        if ($GLOBALS['con4gis_tracking_android_extension']['installed'] || $GLOBALS['con4gis_tracking_android_extension']['installed'])
+        if ($GLOBALS['con4gis']['trackingAndroid']['installed'] || $GLOBALS['con4gis']['trackingBoxes']['installed'])
         {
             $href .= '&amp;id='.$row['id'];
 

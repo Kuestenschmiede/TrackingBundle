@@ -3,7 +3,7 @@ tracking_service:
     defaults:
         _scope: frontend
         _controller: "con4gisTrackingBundle:Tracking:tracking"
-    methods: [GET]
+    methods: [GET, POST]
 
 tracking_legacy_service:
     path: /system/modules/con4gis_core/api/index.php/trackingService
