@@ -13,6 +13,9 @@
 
 namespace con4gis\TrackingBundle\Resources\contao\classes;
 
+use con4gis\MapsBundle\Classes\Events\LoadMapResourcesEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
 /**
  * Class TrackingPluginLoader
  * @package c4g\Tracking
@@ -20,8 +23,11 @@ namespace con4gis\TrackingBundle\Resources\contao\classes;
 class TrackingPluginLoader
 {
 
-    public function loadTrackingPlugin()
-    {
+    public function loadTrackingPlugin(
+        LoadMapResourcesEvent $event,
+        $eventName,
+        EventDispatcherInterface $eventDispatcher
+    ) {
 
         // load language script
         if ($GLOBALS['TL_LANGUAGE'] == 'de') {

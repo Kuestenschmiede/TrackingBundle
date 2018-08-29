@@ -30,7 +30,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_devices'] = array
         'onsubmit_callback' => array
         (
 			array('\con4gis\CoreBundle\Resources\contao\classes\C4GAutomator', 'purgeApiCache'),
-            array('tl_c4g_tracking_devices', 'checkForPushNotifications')
+//            array('tl_c4g_tracking_devices', 'checkForPushNotifications')
         ),
 		'sql' => array
 		(

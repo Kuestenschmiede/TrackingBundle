@@ -13,6 +13,9 @@
 
 namespace con4gis\TrackingBundle\Resources\contao\classes;
 
+use con4gis\MapsBundle\Classes\Events\LoadLayersEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
 /**
  * Class TrackingFrontend
  * @package c4g
@@ -226,8 +229,14 @@ class TrackingFrontend extends \Frontend
         return $arrData;
     }
 
-    public function addLocations($level, $child)
-    {
+    public function addLocations(
+        LoadLayersEvent $event,
+        $eventName,
+        EventDispatcherInterface $eventDispatcher
+    ) {
+        $child = $event->getLayerData();
+        // TODO level so richtig ?
+        $level = $child['pid'];
         $stringClass = $GLOBALS['con4gis']['stringClass'];
 
         if (in_array($child['type'], $this->arrAllowedLocationTypes))
@@ -403,6 +412,7 @@ class TrackingFrontend extends \Frontend
 
                     break;
             }
+            $event->setLayerData($arrData);
 
             return $arrData;
         }
@@ -471,7 +481,7 @@ class TrackingFrontend extends \Frontend
                 'locationStyle' => $this->checkAndReparseLocationStyle($objDevice->locationStyle ? $objDevice->locationStyle : $child['raw']->locstyle, $child, $objDevice),
                 'data' => array
                 (
-                  'url' => $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . "/trackingService?method=getLive&maps=" . $child['id'] . "&id=" . $objDevice->id
+                  'url' => $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . "/trackingService/?method=getLive&maps=" . $child['id'] . "&id=" . $objDevice->id
                 ),
                 'settings' => array
                 (

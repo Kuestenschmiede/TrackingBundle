@@ -15,9 +15,10 @@ c4g.maps.hook.layerswitcher_forEachItem.push(
 
     new c4g.maps.hook.Trackingdatafilter(objParam.that);
 
-    if (c4g.maps.layers[objParam.entry.data('uid')].filterable) {
+    let layers = objParam.that.proxy.layerController.arrLayers;
+    if (layers[objParam.entry.data('uid')].filterable) {
 
-      /*uid = objParam.entry.data('uid');
+      uid = objParam.entry.data('uid');
 
       filterBtn = document.createElement('a');
       filterBtn.setAttribute('href', '#');
@@ -30,7 +31,7 @@ c4g.maps.hook.layerswitcher_forEachItem.push(
       objParam.entry.addClass(c4g.maps.constant.css.STARBOARD_ITEM_HAS_FILTER);
 
       filterBtn.data('uid', 'filter_' + uid);
-      filterBtn.data('filterParams', c4g.maps.layers[objParam.entry.data('uid')].filterable);
+      filterBtn.data('filterParams', layers[objParam.entry.data('uid')].filterable);
       filterBtn.addClass(c4g.maps.constant.css.INACTIVE);
       filterBtn.click(function(event) {
 
@@ -45,8 +46,8 @@ c4g.maps.hook.layerswitcher_forEachItem.push(
           filterBtn.addClass(c4g.maps.constant.css.INACTIVE);
         }
 
-        objParam.that.proxy.plugins.trackingdatafilter.plugin.changeFromLayer('filter_' + uid, c4g.maps.layers[objParam.entry.data('uid')].filterable);
-      });*/
+        objParam.that.proxy.plugins.trackingdatafilter.plugin.changeFromLayer('filter_' + uid, layers[objParam.entry.data('uid')].filterable);
+      });
 
 
 
@@ -61,6 +62,7 @@ c4g.maps.hook.layerswitcher_forEachItem.push(
 
     this.layerswitcher.proxy.plugins = this.layerswitcher.proxy.plugins || {};
     this.layerswitcher.proxy.plugins.trackingdatafilter = this.layerswitcher.proxy.plugins.trackingdatafilter || {};
+    this.layers = Layerswitcher.proxy.layerController.arrLayers;
 
     if (!this.layerswitcher.proxy.plugins.trackingdatafilter.isLoaded) {
       this.create();
@@ -364,7 +366,7 @@ c4g.maps.hook.layerswitcher_forEachItem.push(
 
       uid = id;
 
-      c4g.maps.layers[uid] = testObject;
+      this.layers[uid] = testObject;
 
       self.layerswitcher.proxy.checkLocationStyles();
 
@@ -396,9 +398,9 @@ c4g.maps.hook.layerswitcher_forEachItem.push(
 
       for (var key in self.layerswitcher.proxy.activeLayerIds) {
         if (self.layerswitcher.proxy.activeLayerIds.hasOwnProperty(key)) {
-          if (c4g.maps.layers[key] && c4g.maps.layers[key].filterable) {
-            //console.log(c4g.maps.layers[key]);
-            self.activeLayerFilter['filter_'+key] = c4g.maps.layers[key].filterable;
+          if (this.layers[key] && this.layers[key].filterable) {
+            //console.log(this.layers[key]);
+            self.activeLayerFilter['filter_'+key] = this.layers[key].filterable;
           }
         }
       }
