@@ -5,6 +5,13 @@ tracking_service:
         _controller: "con4gisTrackingBundle:Tracking:tracking"
     methods: [GET, POST]
 
+tracking_service_getLive:
+    path: /con4gis/api/trackingService/getLive/
+    defaults:
+        _scope: frontend
+        _controller: "con4gisTrackingBundle:Tracking:getLive"
+    methods: [GET]
+
 tracking_legacy_service:
     path: /system/modules/con4gis_core/api/index.php/trackingService
     defaults:

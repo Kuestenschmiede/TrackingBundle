@@ -43,5 +43,11 @@ class TrackingController extends Controller
         return JsonResponse::create($trackingService->generate($methodString));
     }
 
+    public function getLiveAction(Request $request)
+    {
+        $trackingService = new TrackingService();
+        return JsonResponse::create($trackingService->generate("getLive"));
+    }
+
 
 }

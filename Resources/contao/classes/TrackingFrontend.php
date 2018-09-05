@@ -481,14 +481,14 @@ class TrackingFrontend extends \Frontend
                 'locationStyle' => $this->checkAndReparseLocationStyle($objDevice->locationStyle ? $objDevice->locationStyle : $child['raw']->locstyle, $child, $objDevice),
                 'data' => array
                 (
-                  'url' => $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . "/trackingService/?method=getLive&maps=" . $child['id'] . "&id=" . $objDevice->id
+                  'url' => $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . "/trackingService/getLive/?maps=" . $child['id'] . "&id=" . $objDevice->id
                 ),
                 'settings' => array
                 (
                   'loadAsync' => true,
                   'refresh' => true,
                   'crossOrigine' => false,
-
+                    'interval' => 60000
                 )
               )
             )

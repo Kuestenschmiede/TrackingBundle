@@ -55,7 +55,6 @@ class TrackingService extends \Controller
 
     private function trackingGetLive()
     {
-
         if (\Input::get('maps'))
         {
             $intMapsItem = \Input::get('maps');
