@@ -14,6 +14,8 @@
 namespace con4gis\TrackingBundle\Resources\contao\classes;
 
 use con4gis\MapsBundle\Classes\Events\LoadLayersEvent;
+use con4gis\MapsBundle\Resources\contao\models\C4gMapsModel;
+use con4gis\TrackingBundle\Resources\contao\models\C4gTrackingPositionsModel;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -81,11 +83,11 @@ class TrackingFrontend extends \Frontend
                   }
                 }
 
-              $objLayer = \con4gis\TrackingBundle\Resources\contao\models\C4gMapsModel::findById($intMapsItem);
+              $objLayer = C4gMapsModel::findById($intMapsItem);
 
               $strPopupContentRaw = "";
 
-              $objPositions = \con4gis\TrackingBundle\Resources\contao\models\C4gTrackingPositionsModel::findBy('id', $intPositionId);
+              $objPositions = C4gTrackingPositionsModel::findBy('id', $intPositionId);
               if ($objPositions !== null)
               {
                 $arrPositionData = $objPositions->row();
