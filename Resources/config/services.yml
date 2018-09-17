@@ -8,4 +8,9 @@ services:
     tracking.onLoadLayersGetTrackingData:
         class: con4gis\TrackingBundle\Resources\contao\classes\TrackingFrontend
         tags:
-        - { name: kernel.event_listener, event: maps.layers.load, method: addLocations, priority: 2048 }
+            - { name: kernel.event_listener, event: maps.layers.load, method: addLocations, priority: 2048 }
+
+
+    con4gis\TrackingBundle\Command\AddressTranslationCommand:
+        tags:
+            - { name: 'console.command', command: 'tracking:translate-addresses' }
