@@ -41,7 +41,6 @@ class AddressTranslationCommand extends ContainerAwareCommand
         $this->getContainer()->get('contao.framework')->initialize();
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $db = Database::getInstance();
-        // TODO standardprofil aus den einstellungen holen
         $arrSettings = $db->execute("SELECT * FROM tl_c4g_settings LIMIT 1")->fetchAssoc();
         $profileId = $arrSettings['defaultprofile'];
         if (!$profileId) {
@@ -56,12 +55,10 @@ class AddressTranslationCommand extends ContainerAwareCommand
             $chunksize = intval($chunksize);
         }
         $counter = 0;
-        // TODO Wurf (10000 Datensätze?) aus der positionstabelle holen
         // get position data without addresses
         $arrPositions = $db->prepare("SELECT * FROM tl_c4g_tracking_positions WHERE COALESCE(address, '') = '' LIMIT ?")
             ->execute($chunksize)->fetchAllAssoc();
         $output->writeln("Anzahl datensätze ist " . count($arrPositions));
-        // TODO daten verarbeiten ( adressen übersetzen)
         foreach ($arrPositions as $key => $position) {
             $position['address'] = C4GBrickCommon::convert_coordinates_to_address($position['latitude'], $position['longitude'], $profileId);
             if ($position['address'] === "") {
@@ -75,10 +72,6 @@ class AddressTranslationCommand extends ContainerAwareCommand
         }
         $output->writeln("Translated adresseses.");
         $output->writeln("Processed " . $counter . " datasets");
-
-
-        // TODO daten zurück in tabelle schreiben
-        // TODO zurück zu 2.
     }
 
 }
