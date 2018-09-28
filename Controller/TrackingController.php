@@ -33,7 +33,6 @@ class TrackingController extends Controller
                 $debugData[$param] = Input::get($param);
             }
         }
-        $this->get('logger')->error($request->request->all());
 
         /**
          * End Debugging
