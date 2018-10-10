@@ -22,9 +22,6 @@ class TrackingController extends Controller
 
     public function trackingAction(Request $request, $methodString)
     {
-        /**
-         * Begin Debugging
-         */
         $debugData = [];
         $arrParams = array('api_key','date','imei','latitude','longitude','phoneNo','speed','mileage','driverId','temperature','status');
         foreach ($arrParams as $param) {
@@ -33,13 +30,14 @@ class TrackingController extends Controller
                 $debugData[$param] = Input::get($param);
             }
         }
-
-        /**
-         * End Debugging
-         */
-
         $trackingService = new TrackingService();
         return JsonResponse::create($trackingService->generate($methodString));
+    }
+
+    public function trackingLegacyAction(Request $request)
+    {
+        $trackingService = new TrackingService();
+        return JsonResponse::create($trackingService->generate(""));
     }
 
     public function getLiveAction(Request $request)
