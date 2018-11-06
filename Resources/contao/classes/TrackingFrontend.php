@@ -15,7 +15,9 @@ namespace con4gis\TrackingBundle\Resources\contao\classes;
 
 use con4gis\MapsBundle\Classes\Events\LoadLayersEvent;
 use con4gis\MapsBundle\Resources\contao\models\C4gMapsModel;
+use con4gis\TrackingBundle\Resources\contao\models\C4gTrackingDevicesModel;
 use con4gis\TrackingBundle\Resources\contao\models\C4gTrackingPositionsModel;
+use Contao\System;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -237,7 +239,6 @@ class TrackingFrontend extends \Frontend
         EventDispatcherInterface $eventDispatcher
     ) {
         $child = $event->getLayerData();
-        // TODO level so richtig ?
         $level = $child['pid'];
         $stringClass = $GLOBALS['con4gis']['stringClass'];
 
@@ -959,6 +960,7 @@ class TrackingFrontend extends \Frontend
         if ($arrMapsSettings['raw']->useIgnitionStatusStyle)
         {
             // use ignition status for location style
+
             if (($blnIgnitionStatusIsOn = Tracking::getIgnitionStatus($objDevice->id))!==null)
             {
                 if ($blnIgnitionStatusIsOn)
@@ -973,6 +975,24 @@ class TrackingFrontend extends \Frontend
 
         }
         return $intCurrentLocationStyle;
+    }
+
+    private function getIgnitionStatus($deviceId)
+    {
+        $device = C4gTrackingDevicesModel::findByPk($deviceId);
+        $lastPositionId = $device->lastPositionId;
+        $position = C4gTrackingPositionsModel::findByPk($lastPositionId);
+        if ($position) {
+            // don't search the whole table if last position was a ignition signal
+            if ($position->boxStatus == 12 || $position->boxStatus == 13) {
+                return $position->boxStatus == 12;
+            } else {
+                // fallback
+                return Tracking::getIgnitionStatus($deviceId);
+            }
+        } else {
+            return false;
+        }
     }
 
 }

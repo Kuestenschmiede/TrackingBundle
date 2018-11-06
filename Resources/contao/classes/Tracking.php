@@ -267,7 +267,7 @@ class Tracking extends \Controller
     // 12 = Zündung an
     // 13 = Zündung aus
     $objDatabase = \Database::getInstance();
-    $objIgnitionInfo = $objDatabase->prepare("SELECT * FROM tl_c4g_tracking_positions WHERE device=? AND boxStatus >= 12 AND boxStatus <= 13 ORDER BY tstamp DESC")
+    $objIgnitionInfo = $objDatabase->prepare("SELECT boxStatus FROM tl_c4g_tracking_positions WHERE device=? AND boxStatus >= 12 AND boxStatus <= 13 ORDER BY tstamp DESC")
                                    ->limit(1)
                                    ->execute($indDeviceId);
     if ($objIgnitionInfo->numRows)
