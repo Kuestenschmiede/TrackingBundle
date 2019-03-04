@@ -30,10 +30,10 @@ array_insert( $GLOBALS['FE_MOD']['con4gis'], $GLOBALS['con4gis']['maps']['instal
 /**
  * Backend Modules
  */
-array_insert($GLOBALS['BE_MOD']['con4gis_bricks'], 7, array
+$GLOBALS['BE_MOD']['con4gis'] = array_merge($GLOBALS['BE_MOD']['con4gis'], array
 (
-	'c4g_tracking' => array
-	(
+    'c4g_tracking' => array
+    (
         'tables'      => array
         (
             'tl_c4g_tracking',
