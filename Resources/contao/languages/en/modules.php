@@ -19,7 +19,7 @@ $GLOBALS['TL_LANG']['TMD']['devices'] = array('Devices', 'Devices that are avail
 $GLOBALS['TL_LANG']['TMD']['pois'] = array('POIs', 'Tracked points of interest');
 $GLOBALS['TL_LANG']['TMD']['tracks'] = array('Tracks', 'Tracks');
 
-$GLOBALS['TL_LANG']['MOD']['c4g_tracking'] = array('Tracking: Configuration', 'Tracking');
+$GLOBALS['TL_LANG']['MOD']['c4g_tracking'] = array('Tracking configuration', 'Tracking');
 //$GLOBALS['TL_LANG']['MOD']['con4gis_tracking'] = array('Tracking', 'Tracking');
 
 $GLOBALS['TL_LANG']['FMD']['c4g_ssologin']   = 'Tracking (con4gis) - SSO-Login';
