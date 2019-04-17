@@ -12,11 +12,11 @@
  */
 
 $GLOBALS['TL_LANG']['tl_c4g_maps']['tDontShowIfEmpty'] = array('Ausblenden wenn keine Einträge vorhanden', 'Blendet die Ebene im Starboard aus, wenn sie keine Einträge enthält.');
-$GLOBALS['TL_LANG']['tl_c4g_maps']['memberVisibility'] = array('Angezeigte Daten', 'Legt fest wessen Daten auf dieser Ebene dargestellt werden.');
-$GLOBALS['TL_LANG']['tl_c4g_maps']['specialMembers'] = array('Ausgewählte Mitglieder', 'Mitglieder dessen Trackingdaten auf dieser Ebene dargestellt werden sollen.');
-$GLOBALS['TL_LANG']['tl_c4g_maps']['specialGroups'] = array('Ausgewählte Gruppen', 'Gruppen dessen Mitglieder-Trackingdaten auf dieser Ebene dargestellt werden sollen.');
+$GLOBALS['TL_LANG']['tl_c4g_maps']['memberVisibility'] = array('Angezeigte Daten', 'Legt fest, wessen Daten auf dieser Ebene dargestellt werden.');
+$GLOBALS['TL_LANG']['tl_c4g_maps']['specialMembers'] = array('Ausgewählte Mitglieder', 'Mitglieder, deren Trackingdaten auf dieser Ebene dargestellt werden sollen.');
+$GLOBALS['TL_LANG']['tl_c4g_maps']['specialGroups'] = array('Ausgewählte Gruppen', 'Gruppen, deren Mitglieder-Trackingdaten auf dieser Ebene dargestellt werden sollen.');
 $GLOBALS['TL_LANG']['tl_c4g_maps']['useDatabaseStatus'] = array('Benutzerdefinierte Sichtbarkeit überschreiben', 'Überschreibt die vom Mitglied eingestellte Sichtbarkeiten seiner Trackingdaten. (Nicht empfohlen!)');
-$GLOBALS['TL_LANG']['tl_c4g_maps']['databaseStatus'] = array('Mit folgendem Wert überschreiben', 'Der Wert mit dem die benutzerdefinierten Sichtbarkeiten überschrieben werden sollen.');
+$GLOBALS['TL_LANG']['tl_c4g_maps']['databaseStatus'] = array('Mit folgendem Wert überschreiben', 'Der Wert, mit dem die benutzerdefinierten Sichtbarkeiten überschrieben werden sollen.');
 
 $GLOBALS['TL_LANG']['tl_c4g_maps']['liveTrackingType'] = array('Live-Tracking-Typ', 'Einträge gruppieren, zusammenfassen oder nur einzelne Geräte auswählen');
 $GLOBALS['TL_LANG']['tl_c4g_maps']['liveTrackingDevices'] = array('Geräte','Geräte');
