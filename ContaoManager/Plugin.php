@@ -26,7 +26,7 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class Plugin implements RoutingPluginInterface, BundlePluginInterface, ConfigPluginInterface
+class Plugin implements RoutingPluginInterface, BundlePluginInterface
 {
     /**
      * {@inheritdoc}
@@ -52,16 +52,5 @@ class Plugin implements RoutingPluginInterface, BundlePluginInterface, ConfigPlu
             BundleConfig::create(con4gisTrackingBundle::class)
                 ->setLoadAfter([con4gisCoreBundle::class,con4gisMapsBundle::class])
         ];
-    }
-
-    /**
-     * Allows a plugin to load container configuration.
-     *
-     * @param LoaderInterface $loader
-     * @param array           $managerConfig
-     */
-    public function registerContainerConfiguration(LoaderInterface $loader, array $managerConfig)
-    {
-        $loader->load('@con4gisTrackingBundle/Resources/config/config.yml');
     }
 }

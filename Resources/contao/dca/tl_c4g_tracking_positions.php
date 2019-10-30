@@ -149,16 +149,6 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_positions'] = array
             'eval'                    => array('tl_class'=>'w50', 'mandatory'=>true),
             'sql'                     => "double NULL"
         ),
-        'location' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['name'],
-            'exclude'                 => true,
-            'search'                  => true,
-            'inputType'               => 'text',
-            'eval'                    => array('tl_class'=>'w50', 'mandatory'=>true),
-            //ToDo Contao 4 Problem lösen
-            'sql'                     => "point NOT NULL"
-        ),
         'accuracy' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['name'],
