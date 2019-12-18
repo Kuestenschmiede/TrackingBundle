@@ -30,7 +30,7 @@ array_insert( $GLOBALS['FE_MOD']['con4gis'], $GLOBALS['con4gis']['maps']['instal
 /**
  * Backend Modules
  */
-$GLOBALS['BE_MOD']['con4gis_maps'] = array_merge($GLOBALS['BE_MOD']['con4gis_maps'], array
+$GLOBALS['BE_MOD']['con4gis'] = array_merge($GLOBALS['BE_MOD']['con4gis'], array
 (
     'c4g_tracking' => array
     (
@@ -43,13 +43,13 @@ $GLOBALS['BE_MOD']['con4gis_maps'] = array_merge($GLOBALS['BE_MOD']['con4gis_map
             'tl_c4g_tracking_positions',
             'tl_c4g_tracking_boxes',
             'tl_c4g_tracking_box_locations'
-        ),
-        //'icon' => 'system/modules/con4gis_tracking/assets/tracking.png',
+        )
     )
 ));
 
-//$GLOBALS['BE_MOD']['con4gis'] =
-//    \con4gis\CoreBundle\Resources\contao\classes\C4GUtils::sortBackendModules($GLOBALS['BE_MOD']['con4gis']);
+if (TL_MODE == "BE") {
+    $GLOBALS['TL_CSS'][] = '/bundles/con4gistracking/css/con4gis.css';
+}
 
 $GLOBALS['c4g_tracking_devicetypes'] = array();
 $GLOBALS['con4gis']['tracking']['apiBaseUrl'] = 'con4gis/api';
