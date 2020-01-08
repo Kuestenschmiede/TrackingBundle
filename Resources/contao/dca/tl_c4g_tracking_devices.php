@@ -76,27 +76,27 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_devices'] = array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['edit'],
 				'href'                => 'act=edit',
-				'icon'                => 'edit.gif'
+				'icon'                => 'edit.svg',
 			),
 			'copy' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['copy'],
 				'href'                => 'act=paste&amp;mode=copy',
-				'icon'                => 'copy.gif',
+				'icon'                => 'copy.svg',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"'
 			),
 			'cut' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['cut'],
 				'href'                => 'act=paste&amp;mode=cut',
-				'icon'                => 'cut.gif',
+				'icon'                => 'cut.svg',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"'
 			),
 			'delete' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['delete'],
 				'href'                => 'act=delete',
-				'icon'                => 'delete.gif',
+				'icon'                => 'delete.svg',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
 			),
 			'show' => array
