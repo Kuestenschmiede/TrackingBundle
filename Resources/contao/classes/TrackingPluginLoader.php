@@ -21,7 +21,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class TrackingPluginLoader
 {
-
     public function loadTrackingPlugin(
         LoadMapResourcesEvent $event,
         $eventName,
@@ -36,7 +35,6 @@ class TrackingPluginLoader
             $GLOBALS['TL_JAVASCRIPT']['c4g-maps-plugin-trackingdatafilterconstant-i18n'] = 'bundles/con4gistracking/js/c4g-maps-plugin-trackingfilter-constant-i18n-en.js';
         }
 
-
         $GLOBALS['TL_JAVASCRIPT']['c4g-maps-plugin-trackingdatafilter-constant'] = 'bundles/con4gistracking/js/c4g-maps-plugin-trackingfilter-constant.js';
 
         $GLOBALS['TL_JAVASCRIPT']['c4g-maps-plugin-trackingdatafilter-jquery-simple-datetimepicker'] = 'bundles/con4gistracking/js/jquery-simple-datetimepicker/1.13.0/jquery.simple-dtpicker.js';
@@ -45,6 +43,5 @@ class TrackingPluginLoader
 
         $GLOBALS['TL_CSS']['c4g-maps-plugin-trackingdatafilter-jquery-simple-datetimepicker'] = 'bundles/con4gistracking/js/jquery-simple-datetimepicker/1.13.0/jquery.simple-dtpicker.css';
         $GLOBALS['TL_CSS']['c4g-maps-plugin-trackingdatafilter'] = 'bundles/con4gistracking/css/c4g-maps-plugin-trackingdatafilter.css';
-
     }
 }

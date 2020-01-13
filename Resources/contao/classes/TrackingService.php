@@ -12,21 +12,18 @@
  */
 namespace con4gis\TrackingBundle\Resources\contao\classes;
 
-
 /**
  * Class TrackingService
  * @package c4g
  */
 class TrackingService extends \Controller
 {
-
-    private $arrReturn = array();
+    private $arrReturn = [];
     private $blnDebugMode = false;
 
     public function __construct()
     {
-        if ($this->Input->get('debug') && ($this->Input->get('debug')=='1' || $this->Input->get('debug')=='true'))
-        {
+        if ($this->Input->get('debug') && ($this->Input->get('debug') == '1' || $this->Input->get('debug') == 'true')) {
             $this->blnDebugMode = true;
         }
     }
@@ -41,162 +38,137 @@ class TrackingService extends \Controller
             if ($this->$method()) {
                 return $this->arrReturn;
             }
+
             return $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['method_error'] . $strMethod);
         } elseif (method_exists($this, $strMethod)) {
             if ($this->$strMethod()) {
                 return $this->arrReturn;
             }
+
             return $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['method_error'] . $strMethod);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     private function trackingGetLive()
     {
-        if (\Input::get('maps'))
-        {
+        if (\Input::get('maps')) {
             $intMapsItem = \Input::get('maps');
         }
 
         $this->import('Database');
         $time = time();
-        $strTimeSelect = $time - (60*60);
+        $strTimeSelect = $time - (60 * 60);
         //$strTimeSelect = 0;
 
         /*$objPositions = $this->Database->prepare("SELECT * FROM (SELECT tl_c4g_tracking_positions.*, tl_c4g_tracking_tracks.name, tl_c4g_tracking_tracks.comment, tl_c4g_tracking_tracks.visibility FROM tl_c4g_tracking_positions  LEFT JOIN tl_c4g_tracking_tracks ON tl_c4g_tracking_positions.track_uuid=tl_c4g_tracking_tracks.uuid WHERE tl_c4g_tracking_positions.tstamp>? ORDER BY tl_c4g_tracking_positions.tstamp DESC) as inv GROUP BY track_uuid")
                                                ->execute($strTimeSelect);*/
 
-        if (\Input::get('id'))
-        {
-
-            if (is_array(\Input::get('id')))
-            {
+        if (\Input::get('id')) {
+            if (is_array(\Input::get('id'))) {
                 // multiple devices
                 $arrDevices = \Input::get('id');
 
                 $arrIds = implode(',', array_map('intval', $arrDevices));
 
-                $objPositions = $this->Database->prepare("SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0 AND tl_c4g_tracking_devices.id IN (" . $arrIds . ")")
+                $objPositions = $this->Database->prepare('SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0 AND tl_c4g_tracking_devices.id IN (' . $arrIds . ')')
                   ->execute();
-            }
-            else
-            {
+            } else {
                 // single devices
                 $intDeviceId = \Input::get('id');
-                $objPositions = $this->Database->prepare("SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0 AND tl_c4g_tracking_devices.id=?")
+                $objPositions = $this->Database->prepare('SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0 AND tl_c4g_tracking_devices.id=?')
                   ->execute($intDeviceId);
             }
-        }
-        elseif (\Input::get('useGroup'))
-        {
+        } elseif (\Input::get('useGroup')) {
             $intGroupId = \Input::get('useGroup');
-            $objPositions = $this->Database->prepare("SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0 AND tl_c4g_tracking_devices.groupId=?")
+            $objPositions = $this->Database->prepare('SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0 AND tl_c4g_tracking_devices.groupId=?')
                                             ->execute($intGroupId);
-        }
-        else
-        {
+        } else {
             // Fallback: keine weiteren Einstellungen -> alle Geräte mit Positionsdaten
-            $objPositions = $this->Database->prepare("SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0")
+            $objPositions = $this->Database->prepare('SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0')
               ->execute();
         }
 
-
         if ($objPositions->numRows) {
-
-            $arrFeatures = array();
-            while ($objPositions->next())
-            {
-
-                $arrFeatures[] = array
-                (
+            $arrFeatures = [];
+            while ($objPositions->next()) {
+                $arrFeatures[] = [
                     'type' => 'Feature',
-                    'properties' => array
-                    (
+                    'properties' => [
                         'name' => $objPositions->name ? $objPositions->name : $objPositions->comment,
                         'positionId' => $objPositions->id,
-                        'popup' => array(
-                            'content' => 'devices:live;id,' . $objPositions->id . ';maps,' . $intMapsItem
-                        )
-                    ),
-                    'geometry' => array
-                    (
+                        'popup' => [
+                            'content' => 'devices:live;id,' . $objPositions->id . ';maps,' . $intMapsItem,
+                        ],
+                    ],
+                    'geometry' => [
                         'type' => 'Point',
-                        'coordinates' => array
-                        (
+                        'coordinates' => [
                             (float) $objPositions->longitude,
-                            (float) $objPositions->latitude
-                        )
-                    )
-                );
+                            (float) $objPositions->latitude,
+                        ],
+                    ],
+                ];
                 // Todo: alle Daten im properties-objekt bereit stellen
             }
-            $arrReturn = array();
-            $arrReturn['type'] = "FeatureCollection";
+            $arrReturn = [];
+            $arrReturn['type'] = 'FeatureCollection';
             $arrReturn['features'] = $arrFeatures;
 
             $this->arrReturn = $arrReturn;
+
             return true;
         }
-        $this->arrReturn = array
-        (
-            'type' => 'Feature'
-        );
+        $this->arrReturn = [
+            'type' => 'Feature',
+        ];
+
         return true;
     }
 
     private function trackingGetBoxTrack()
     {
-
-
         $blnUseFromFilter = false;
         $blnUseToFilter = false;
 
         $this->import('Database');
         $varBoxId = \Input::get('id');
 
-        if (!is_array($varBoxId))
-        {
-            $varBoxId = array(
-                0 => $varBoxId
-            );
+        if (!is_array($varBoxId)) {
+            $varBoxId = [
+                0 => $varBoxId,
+            ];
         }
 
-
-
-        if (\Input::get('filterFrom'))
-        {
+        if (\Input::get('filterFrom')) {
             $blnUseFromFilter = true;
             $strFromFilter = \Input::get('filterFrom');
         }
-        if (\Input::get('filterTo'))
-        {
+        if (\Input::get('filterTo')) {
             $blnUseToFilter = true;
             $strToFilter = \Input::get('filterTo');
         }
         //filterFrom=1421017200&filterTo=1434060000
 
-        $arrFeatures = array();
+        $arrFeatures = [];
 
-        foreach ($varBoxId as $intBoxId)
-        {
+        foreach ($varBoxId as $intBoxId) {
             //echo $intBoxId;
-            $arrCoordinates = array();
+            $arrCoordinates = [];
 
-            $strAdditionalWhere = "";
+            $strAdditionalWhere = '';
 
-            $arrParams = array();
+            $arrParams = [];
 
             $arrParams[] = $intBoxId;
 
             $blnUseTimeZoneSettings = false;
             $objDevice = \con4gis\TrackingBundle\Resources\contao\models\C4gTrackingDevicesModel::findBy('id', $intBoxId);
-            if ($objDevice !== null)
-            {
+            if ($objDevice !== null) {
                 $arrDeviceData = $objDevice->row();
 
-                if ($arrDeviceData['timeZone'] && $arrDeviceData['timeZone']!=\Config::get('timeZone'))
-                {
+                if ($arrDeviceData['timeZone'] && $arrDeviceData['timeZone'] != \Config::get('timeZone')) {
                     $blnUseTimeZoneSettings = true;
                     $strTimeZoneSettings = $arrDeviceData['timeZone'];
                     // store local and device timezone
@@ -204,17 +176,15 @@ class TrackingService extends \Controller
                     $dateTimeZoneServer = new \DateTimeZone(\Config::get('timeZone'));
 
                     // get one date-time-object for device timezone
-                    $dateTimeDevice = new \DateTime("now", $dateTimeZoneDevice);
+                    $dateTimeDevice = new \DateTime('now', $dateTimeZoneDevice);
 
                     // get the offset of the timezone
                     $timeOffset = $dateTimeZoneServer->getOffset($dateTimeDevice);
-
                 }
             }
 
-            if ($blnUseFromFilter)
-            {
-                $strAdditionalWhere .= " AND tstamp>?";
+            if ($blnUseFromFilter) {
+                $strAdditionalWhere .= ' AND tstamp>?';
                 if ($blnUseTimeZoneSettings) {
                     $arrParams[] = $strFromFilter - $timeOffset;
                 } else {
@@ -222,9 +192,8 @@ class TrackingService extends \Controller
                 }
             }
 
-            if ($blnUseToFilter)
-            {
-                $strAdditionalWhere .= " AND tstamp<?";
+            if ($blnUseToFilter) {
+                $strAdditionalWhere .= ' AND tstamp<?';
                 if ($blnUseTimeZoneSettings) {
                     $arrParams[] = $strToFilter - $timeOffset;
                 } else {
@@ -232,249 +201,204 @@ class TrackingService extends \Controller
                 }
             }
 
-
-            $objPositions = $this->Database->prepare("SELECT * FROM tl_c4g_tracking_positions WHERE device=?" . $strAdditionalWhere . " ORDER BY tstamp")
+            $objPositions = $this->Database->prepare('SELECT * FROM tl_c4g_tracking_positions WHERE device=?' . $strAdditionalWhere . ' ORDER BY tstamp')
                                            ->execute($arrParams);
 
-            if ($objPositions->numRows)
-            {
-                $arrPositionInfo = array();
-                while ($objPositions->next())
-                {
-                    $arrCoordinates[] = array
-                    (
+            if ($objPositions->numRows) {
+                $arrPositionInfo = [];
+                while ($objPositions->next()) {
+                    $arrCoordinates[] = [
                         (float) $objPositions->longitude,
-                        (float) $objPositions->latitude
-                    );
+                        (float) $objPositions->latitude,
+                    ];
 
-                    if ($blnUseTimeZoneSettings)
-                    {
+                    if ($blnUseTimeZoneSettings) {
 
                         // recalculate timestamp with given offset
                         $varTimeStamp = $objPositions->tstamp + $timeOffset;
 
                         $arrPositionInfo[] = \Date::parse(\Config::get('datimFormat'), $varTimeStamp);
                         $strPositionInfo = \Date::parse(\Config::get('datimFormat'), $varTimeStamp);
-
-                    }
-                    else
-                    {
+                    } else {
                         $arrPositionInfo[] = \Date::parse(\Config::get('datimFormat'), $objPositions->tstamp);
                         $strPositionInfo = \Date::parse(\Config::get('datimFormat'), $objPositions->tstamp);
                     }
-                    $arrFeatures[] = array
-                    (
-                        "type" => "Feature",
-                        "geometry" => array(
-                            "type" => "Point",
-                            "coordinates" => array(
+                    $arrFeatures[] = [
+                        'type' => 'Feature',
+                        'geometry' => [
+                            'type' => 'Point',
+                            'coordinates' => [
                                 (float) $objPositions->longitude,
-                                (float) $objPositions->latitude
-                            )
-                        ),
-                        'properties' => array
-                        (
+                                (float) $objPositions->latitude,
+                            ],
+                        ],
+                        'properties' => [
                             'projection' => 'EPSG:4326',
-                            'tooltip' => $strPositionInfo
-                        )
-                    );
-
+                            'tooltip' => $strPositionInfo,
+                        ],
+                    ];
                 }
 
-                $arrGeometry = array();
+                $arrGeometry = [];
                 $arrGeometry['type'] = 'LineString';
                 $arrGeometry['coordinates'] = $arrCoordinates;
 
-
-                $arrFeatures[] = array
-                (
+                $arrFeatures[] = [
                     'type' => 'Feature',
                     'geometry' => $arrGeometry,
-                    'properties' => array
-                    (
+                    'properties' => [
                         'projection' => 'EPSG:4326',
                         'positioninfos' => $arrPositionInfo,
                         //'tooltip' => 'Test'
-                    )
-                );
-
+                    ],
+                ];
             }
-
         }
 
-        $arrReturn = array(
+        $arrReturn = [
             'type' => 'FeatureCollection',
-            'features' => $arrFeatures
-        );
-
+            'features' => $arrFeatures,
+        ];
 
         $this->arrReturn = $arrReturn;
-        return true;
 
+        return true;
     }
 
     private function trackingGetTrack()
     {
         $this->import('Database');
-        $arrCoordinates = array();
+        $arrCoordinates = [];
 
         $trackId = \Input::get('id');
 
-        $objPositions = $this->Database->prepare("SELECT * FROM tl_c4g_tracking_positions WHERE trackUuid=?")
+        $objPositions = $this->Database->prepare('SELECT * FROM tl_c4g_tracking_positions WHERE trackUuid=?')
                                        ->execute($trackId);
 
-        if ($objPositions->numRows)
-        {
-          while ($objPositions->next())
-          {
-            $arrCoordinates[] = array
-            (
+        if ($objPositions->numRows) {
+            while ($objPositions->next()) {
+                $arrCoordinates[] = [
                 (float) $objPositions->longitude,
-                (float) $objPositions->latitude
-            );
-          }
+                (float) $objPositions->latitude,
+            ];
+            }
         }
 
-        $arrGeometry = array();
+        $arrGeometry = [];
         $arrGeometry['type'] = 'LineString';
         $arrGeometry['coordinates'] = $arrCoordinates;
 
-        $arrFeatures = array();
-        $arrFeatures[] = array
-        (
+        $arrFeatures = [];
+        $arrFeatures[] = [
             'type' => 'Feature',
             'geometry' => $arrGeometry,
-            'properties' => array
-            (
-                'projection' => 'EPSG:4326'
-            )
-        );
+            'properties' => [
+                'projection' => 'EPSG:4326',
+            ],
+        ];
         // Todo: alle Daten im properties-objekt bereit stellen
 
-        $objPois = $this->Database->prepare("SELECT * FROM tl_c4g_tracking_pois WHERE trackUuid=?")
+        $objPois = $this->Database->prepare('SELECT * FROM tl_c4g_tracking_pois WHERE trackUuid=?')
                                        ->execute($trackId);
-        if ($objPois->numRows > 0)
-        {
-          while ($objPois->next())
-          {
-            $arrFeatures[] = array
-            (
+        if ($objPois->numRows > 0) {
+            while ($objPois->next()) {
+                $arrFeatures[] = [
                 'type' => 'Feature',
-                'properties' => array
-                (
-                  'name' => $objPois->name ? $objPois->name : $objPois->comment
-                ),
-                'geometry' => array
-                (
+                'properties' => [
+                  'name' => $objPois->name ? $objPois->name : $objPois->comment,
+                ],
+                'geometry' => [
                     'type' => 'Point',
-                    'coordinates' => array
-                    (
+                    'coordinates' => [
                         (float) $objPois->longitude,
-                        (float) $objPois->latitude
-                    )
-                )
-            );
-              // Todo: alle Daten im properties-objekt bereit stellen
-          }
+                        (float) $objPois->latitude,
+                    ],
+                ],
+            ];
+                // Todo: alle Daten im properties-objekt bereit stellen
+            }
         }
 
-        $arrReturn = array();
-        $arrReturn['type'] = "FeatureCollection";
+        $arrReturn = [];
+        $arrReturn['type'] = 'FeatureCollection';
         $arrReturn['features'] = $arrFeatures;
 
         $this->arrReturn = $arrReturn;
+
         return true;
     }
 
-
     private function trackingNewPoi()
     {
+        $arrPositionData = [];
 
-        $arrPositionData = array();
-
-        if ($this->blnDebugMode)
-        {
-            \Input::setPost('user',\Input::get('user'));
-            \Input::setPost('configuration',\Input::get('configuration'));
-            \Input::setPost('latitude',\Input::get('latitude'));
-            \Input::setPost('longitude',\Input::get('longitude'));
-            \Input::setPost('trackid',\Input::get('trackid'));
-            \Input::setPost('accuracy',\Input::get('accuracy'));
-            \Input::setPost('speed',\Input::get('speed'));
-            \Input::setPost('imei',\Input::get('imei'));
+        if ($this->blnDebugMode) {
+            \Input::setPost('user', \Input::get('user'));
+            \Input::setPost('configuration', \Input::get('configuration'));
+            \Input::setPost('latitude', \Input::get('latitude'));
+            \Input::setPost('longitude', \Input::get('longitude'));
+            \Input::setPost('trackid', \Input::get('trackid'));
+            \Input::setPost('accuracy', \Input::get('accuracy'));
+            \Input::setPost('speed', \Input::get('speed'));
+            \Input::setPost('imei', \Input::get('imei'));
         }
 
         $blnHasError = false;
-        if (!\Input::post('user'))
-        {
+        if (!\Input::post('user')) {
             $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_username']);
             $blnHasError = true;
         }
-        if (!\Input::post('configuration'))
-        {
+        if (!\Input::post('configuration')) {
             $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_config']);
             $blnHasError = true;
         }
-        if (!\Input::post('latitude'))
-        {
-            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_latitude'] );
+        if (!\Input::post('latitude')) {
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_latitude']);
             $blnHasError = true;
         }
-        if (!\Input::post('longitude'))
-        {
+        if (!\Input::post('longitude')) {
             $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_longitude']);
             $blnHasError = true;
         }
 
-        $strName = "";
-        if (\Input::post('name'))
-        {
+        $strName = '';
+        if (\Input::post('name')) {
             $strName = \Input::post('name');
         }
 
         $intTrackId = 0;
-        if (\Input::post('trackid'))
-        {
+        if (\Input::post('trackid')) {
             $intTrackId = \Input::post('trackid');
         }
 
-        if (!$blnHasError)
-        {
-
+        if (!$blnHasError) {
             $arrPositionData['latitude'] = \Input::post('latitude');
             $arrPositionData['longitude'] = \Input::post('longitude');
 
             // optional data
             $timeStamp = false;
-            $arrAdditionalData = array();
+            $arrAdditionalData = [];
 
-            if (\Input::post('accuracy'))
-            {
+            if (\Input::post('accuracy')) {
                 $arrPositionData['accuracy'] = \Input::post('accuracy');
             }
-            if (\Input::post('speed'))
-            {
+            if (\Input::post('speed')) {
                 $arrPositionData['speed'] = \Input::post('speed');
             }
-            if (\Input::post('timestamp'))
-            {
+            if (\Input::post('timestamp')) {
                 $timeStamp = \Input::post('timestamp');
             }
 
-            if (\Input::post('positiontype'))
-            {
+            if (\Input::post('positiontype')) {
                 $arrAdditionalData['positiontype'] = \Input::post('positiontype');
             }
-            if (\Input::post('imei'))
-            {
+            if (\Input::post('imei')) {
                 $arrAdditionalData['imei'] = \Input::post('imei');
             }
-            if (\Input::post('batterystatus'))
-            {
+            if (\Input::post('batterystatus')) {
                 $arrAdditionalData['batterystatus'] = \Input::post('batterystatus');
             }
-            if (\Input::post('networkinfo'))
-            {
+            if (\Input::post('networkinfo')) {
                 $arrAdditionalData['networkinfo'] = \Input::post('networkinfo');
             }
 
@@ -482,9 +406,7 @@ class TrackingService extends \Controller
 
             $this->arrReturn['error'] = false;
 
-            $this->arrReturn['track'] = Tracking::setNewPoi(\Input::post('configuration'), \Input::post('user'), (\Input::post('privacy') ? \Input::post('privacy') : "privat"), $strName, $intTrackId, $timeStamp, $arrPositionData);
-
-
+            $this->arrReturn['track'] = Tracking::setNewPoi(\Input::post('configuration'), \Input::post('user'), (\Input::post('privacy') ? \Input::post('privacy') : 'privat'), $strName, $intTrackId, $timeStamp, $arrPositionData);
         }
 
         return true;
@@ -492,183 +414,157 @@ class TrackingService extends \Controller
 
     private function trackingGetDeviceStatus()
     {
-        if ($this->blnDebugMode)
-        {
-            $arrParams = array('api_key', 'imei');
+        if ($this->blnDebugMode) {
+            $arrParams = ['api_key', 'imei'];
 
-            foreach ($arrParams as $strParam)
-            {
-                if (\Input::get($strParam))
-                {
+            foreach ($arrParams as $strParam) {
+                if (\Input::get($strParam)) {
                     \Input::setPost($strParam, \Input::get($strParam));
                 }
             }
         }
 
         // check mandatory params
-        if (!\Input::post('api_key') || !\Input::post('imei'))
-        {
+        if (!\Input::post('api_key') || !\Input::post('imei')) {
             return false;
         }
 
         // check api_key
         $objTracking = \con4gis\TrackingBundle\Resources\contao\models\C4gTrackingModel::findBy('apiKey', \Input::post('api_key'));
-        if ($objTracking === null)
-        {
+        if ($objTracking === null) {
             return false;
         }
 
         // check imei number
         $objTrackingBox = \con4gis\TrackingBundle\Resources\contao\models\C4gTrackingDevicesModel::findByImeiEndpiece(\Input::post('imei'));
-        if ($objTrackingBox === null)
-        {
-            $this->arrReturn = $this->getErrorReturn(array
-            (
-                "message" => "Device not found",
-                "status" => 900
-            ));
+        if ($objTrackingBox === null) {
+            $this->arrReturn = $this->getErrorReturn([
+                'message' => 'Device not found',
+                'status' => 900,
+            ]);
+
             return true;
         }
 
-        if ($objTrackingBox->deaktivated)
-        {
+        if ($objTrackingBox->deaktivated) {
             $this->arrReturn['status'] = 0;
-        }
-        else
-        {
+        } else {
             $this->arrReturn['status'] = 1;
         }
 
         return true;
-
     }
 
     private function trackingGetRegisteredBoxes()
     {
-        if ($this->blnDebugMode)
-        {
-            $arrParams = array('api_key');
+        if ($this->blnDebugMode) {
+            $arrParams = ['api_key'];
 
-            foreach ($arrParams as $strParam)
-            {
-                if (\Input::get($strParam))
-                {
+            foreach ($arrParams as $strParam) {
+                if (\Input::get($strParam)) {
                     \Input::setPost($strParam, \Input::get($strParam));
                 }
             }
         }
 
         // check mandatory params
-        if (!\Input::post('api_key'))
-        {
+        if (!\Input::post('api_key')) {
             return false;
         }
 
         // check api_key
         $objTracking = \con4gis\TrackingBundle\Resources\contao\models\C4gTrackingModel::findBy('apiKey', \Input::post('api_key'));
-        if ($objTracking === null)
-        {
+        if ($objTracking === null) {
             return false;
         }
 
-        $objTrackingBoxes = \con4gis\TrackingBundle\Resources\contao\models\C4gTrackingDevicesModel::findBy('type','box');
+        $objTrackingBoxes = \con4gis\TrackingBundle\Resources\contao\models\C4gTrackingDevicesModel::findBy('type', 'box');
 
-        $arrDevices = array();
+        $arrDevices = [];
 
-        if ($objTrackingBoxes!==null)
-        {
-            while($objTrackingBoxes->next())
-            {
-                if (!$objTrackingBoxes->imei) continue;
+        if ($objTrackingBoxes !== null) {
+            while ($objTrackingBoxes->next()) {
+                if (!$objTrackingBoxes->imei) {
+                    continue;
+                }
                 $arrDevices[] = $objTrackingBoxes->imei;
             }
         }
-
 
         $this->arrReturn['error'] = false;
         $this->arrReturn['devices'] = $arrDevices;
 
         return true;
-
     }
 
     private function trackingNewPositionFromBox()
     {
+        if ($this->blnDebugMode) {
+            $arrParams = ['api_key','date','imei','latitude','longitude','phoneNo','speed','mileage','driverId','temperature','status'];
 
-        if ($this->blnDebugMode)
-        {
-            $arrParams = array('api_key','date','imei','latitude','longitude','phoneNo','speed','mileage','driverId','temperature','status');
-
-            foreach ($arrParams as $strParam)
-            {
-                if (\Input::get($strParam))
-                {
+            foreach ($arrParams as $strParam) {
+                if (\Input::get($strParam)) {
                     \Input::setPost($strParam, \Input::get($strParam));
                 }
             }
         }
 
         // check mandatory params
-        if (!\Input::post('api_key') || !\Input::post('date') || !\Input::post('imei') || !\Input::post('latitude') || !\Input::post('longitude'))
-        {
+        if (!\Input::post('api_key') || !\Input::post('date') || !\Input::post('imei') || !\Input::post('latitude') || !\Input::post('longitude')) {
             return false;
         }
 
         // check api_key
         $objTracking = \con4gis\TrackingBundle\Resources\contao\models\C4gTrackingModel::findBy('apiKey', \Input::post('api_key'));
-        if ($objTracking === null)
-        {
+        if ($objTracking === null) {
             return false;
         }
 
         // check imei number
         $objTrackingBox = \con4gis\TrackingBundle\Resources\contao\models\C4gTrackingDevicesModel::findByImeiEndpiece(\Input::post('imei'));
-        if ($objTrackingBox === null)
-        {
-            $this->arrReturn = $this->getErrorReturn(array
-            (
-                "message" => "Device not found",
-                "status" => 900
-            ));
+        if ($objTrackingBox === null) {
+            $this->arrReturn = $this->getErrorReturn([
+                'message' => 'Device not found',
+                'status' => 900,
+            ]);
+
             return true;
         }
 
-        if ($objTrackingBox->deaktivated)
-        {
-            $this->arrReturn = $this->getErrorReturn(array
-            (
-                "message" => "Device is deaktivated",
-                "status" => 901
-            ));
+        if ($objTrackingBox->deaktivated) {
+            $this->arrReturn = $this->getErrorReturn([
+                'message' => 'Device is deaktivated',
+                'status' => 901,
+            ]);
+
             return true;
         }
         # Berechnung des Akku Status der tracking Devices
-        if (\Contao\Validator::isNumeric(\Input::post('akku')))  {
+        if (\Contao\Validator::isNumeric(\Input::post('akku'))) {
             $deviceId = \Input::post('device_id');
-            if ( (str_split($deviceId)[1] == '4') | (str_split($deviceId)[1] == '3') ) {
+            if ((str_split($deviceId)[1] == '4') | (str_split($deviceId)[1] == '3')) {
                 $akku = number_format(((100 / 254) * round((\Input::post('akku') * 1000) / 19.8)) / 100, 4, '.', '');
-            }
-            elseif ( (str_split($deviceId)[1] == '2') | (str_split($deviceId)[1] == '1')) {
-                $akku = number_format((100/255) * round(((\Input::post('akku') - 3.4) / 0.88) *255) / 100, 4, '.','');
+            } elseif ((str_split($deviceId)[1] == '2') | (str_split($deviceId)[1] == '1')) {
+                $akku = number_format((100 / 255) * round(((\Input::post('akku') - 3.4) / 0.88) * 255) / 100, 4, '.', '');
             }
         } else {
             $akku = '';
         }
 
-        $arrAdditionalData = array(
+        $arrAdditionalData = [
             'boxPhoneNo' => \Input::post('phoneNo') ? \Input::post('phoneNo') : '',
             'boxMileage' => \Input::post('mileage') ? \Input::post('mileage') : '',
             'boxDriverId' => \Input::post('driverId') ? \Input::post('driverId') : '',
             'boxTemperature' => \Input::post('temperature') ? \Input::post('temperature') : '',
             'akku' => \Input::post('akku') ? \Input::post('akku') : '',
             'batterystatus' => $akku ? $akku : '',
-            'battery'  => \Input::post('battery') ? \Input::post('battery') : '',
-            'deviceId'  => \Input::post('device_id') ? \Input::post('device_id') : '',
+            'battery' => \Input::post('battery') ? \Input::post('battery') : '',
+            'deviceId' => \Input::post('device_id') ? \Input::post('device_id') : '',
             'boxStatus' => \Input::post('status') ? \Input::post('status') : '',
-            'imei' => \Input::post('imei')
-        );
+            'imei' => \Input::post('imei'),
+        ];
 
-        Tracking::setNewPosition("devices", \Input::post('latitude'), \Input::post('longitude'), \Input::post('accuracy'), \Input::post('speed'), \Input::post('date'), $arrAdditionalData);
+        Tracking::setNewPosition('devices', \Input::post('latitude'), \Input::post('longitude'), \Input::post('accuracy'), \Input::post('speed'), \Input::post('date'), $arrAdditionalData);
 
         $this->arrReturn['error'] = false;
         $this->arrReturn['status'] = 905;
@@ -677,7 +573,6 @@ class TrackingService extends \Controller
     }
 
     /**
-     *
      * @GET-Parameter vom SMS-Gateway
      * sender
      * timestamp (wann SMS-Gateway die SMS empfangen hat YYYYmmddHHiiss)
@@ -689,16 +584,13 @@ class TrackingService extends \Controller
      */
     private function trackingNewPositionFromSms()
     {
-
         $blnHasError = false;
 
-        if ($this->blnDebugMode)
-        {
-            \Input::setPost('text',\Input::get('text'));
+        if ($this->blnDebugMode) {
+            \Input::setPost('text', \Input::get('text'));
         }
 
-        if (!\Input::post('text'))
-        {
+        if (!\Input::post('text')) {
             $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_data']);
             $blnHasError = true;
         }
@@ -707,117 +599,91 @@ class TrackingService extends \Controller
 
         $arrSmsContent = explode(';', $strSmsContent);
 
-        if (!is_array($arrSmsContent) || sizeof($arrSmsContent) == 0)
-        {
+        if (!is_array($arrSmsContent) || sizeof($arrSmsContent) == 0) {
             $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['data_error']);
             $blnHasError = true;
         }
 
-        if (!$blnHasError)
-        {
-
-            if ($arrSmsContent[0] == "newPosition")
-            {
-
-                $arrAdditionalData = array();
+        if (!$blnHasError) {
+            if ($arrSmsContent[0] == 'newPosition') {
+                $arrAdditionalData = [];
 
                 $arrAdditionalData['trackUuid'] = $arrSmsContent[1];
                 $strLatitude = $arrSmsContent[2];
                 $strLongitude = $arrSmsContent[3];
                 $strTimestamp = $arrSmsContent[4];
 
-                $arrAdditionalData = array();
-                if ($arrSmsContent[5])
-                {
+                $arrAdditionalData = [];
+                if ($arrSmsContent[5]) {
                     $strBatterystatus = $arrSmsContent[5];
                     $arrAdditionalData['batterystatus'] = $strBatterystatus;
                 }
 
                 $this->arrReturn['error'] = false;
 
-                $this->arrReturn['track'] = Tracking::setNewPosition("tracks", $strLatitude, $strLongitude, 0, 0, $strTimestamp, $arrAdditionalData);
-
-
+                $this->arrReturn['track'] = Tracking::setNewPosition('tracks', $strLatitude, $strLongitude, 0, 0, $strTimestamp, $arrAdditionalData);
             }
         }
 
-
         return true;
-
     }
 
     private function trackingNewPosition()
     {
-
-        if ($this->blnDebugMode)
-        {
-            \Input::setPost('track',\Input::get('track'));
-            \Input::setPost('latitude',\Input::get('latitude'));
-            \Input::setPost('longitude',\Input::get('longitude'));
+        if ($this->blnDebugMode) {
+            \Input::setPost('track', \Input::get('track'));
+            \Input::setPost('latitude', \Input::get('latitude'));
+            \Input::setPost('longitude', \Input::get('longitude'));
         }
 
         $blnHasError = false;
-        if (!\Input::post('track'))
-        {
+        if (!\Input::post('track')) {
             $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_track']);
             $blnHasError = true;
         }
-        if (!\Input::post('latitude'))
-        {
-            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_latitude'] );
+        if (!\Input::post('latitude')) {
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_latitude']);
             $blnHasError = true;
         }
-        if (!\Input::post('longitude'))
-        {
+        if (!\Input::post('longitude')) {
             $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_longitude']);
             $blnHasError = true;
         }
-        if (!$blnHasError)
-        {
+        if (!$blnHasError) {
             // optional data
             $longAccuracy = 0;
             $longSpeed = 0;
             $timeStamp = false;
-            $arrAdditionalData = array();
+            $arrAdditionalData = [];
 
-            if (\Input::post('accuracy'))
-            {
+            if (\Input::post('accuracy')) {
                 $longAccuracy = \Input::post('accuracy');
             }
-            if (\Input::post('speed'))
-            {
+            if (\Input::post('speed')) {
                 $longSpeed = \Input::post('speed');
             }
-            if (\Input::post('timestamp'))
-            {
+            if (\Input::post('timestamp')) {
                 $timeStamp = \Input::post('timestamp');
             }
 
-            if (\Input::post('positiontype'))
-            {
+            if (\Input::post('positiontype')) {
                 $arrAdditionalData['positiontype'] = \Input::post('positiontype');
             }
-            if (\Input::post('imei'))
-            {
+            if (\Input::post('imei')) {
                 $arrAdditionalData['imei'] = \Input::post('imei');
             }
-            if (\Input::post('batterystatus'))
-            {
+            if (\Input::post('batterystatus')) {
                 $arrAdditionalData['batterystatus'] = \Input::post('batterystatus');
             }
-            if (\Input::post('networkinfo'))
-            {
+            if (\Input::post('networkinfo')) {
                 $arrAdditionalData['networkinfo'] = \Input::post('networkinfo');
             }
-            if (\Input::post('track'))
-            {
+            if (\Input::post('track')) {
                 $arrAdditionalData['trackUuid'] = \Input::post('track');
             }
 
             $this->arrReturn['error'] = false;
-            $this->arrReturn['track'] = Tracking::setNewPosition("tracks", \Input::post('latitude'), \Input::post('longitude'), $longAccuracy, $longSpeed, $timeStamp, $arrAdditionalData);
-
-
+            $this->arrReturn['track'] = Tracking::setNewPosition('tracks', \Input::post('latitude'), \Input::post('longitude'), $longAccuracy, $longSpeed, $timeStamp, $arrAdditionalData);
         }
 
         return true;
@@ -825,76 +691,61 @@ class TrackingService extends \Controller
 
     private function trackingNewTrack()
     {
-
-        if ($this->blnDebugMode)
-        {
-            \Input::setPost('user',\Input::get('user'));
-            \Input::setPost('configuration',\Input::get('configuration'));
+        if ($this->blnDebugMode) {
+            \Input::setPost('user', \Input::get('user'));
+            \Input::setPost('configuration', \Input::get('configuration'));
         }
 
         $blnHasError = false;
-        if (!\Input::post('user'))
-        {
+        if (!\Input::post('user')) {
             $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_username']);
             $blnHasError = true;
         }
-        if (!\Input::post('configuration'))
-        {
+        if (!\Input::post('configuration')) {
             $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_config']);
             $blnHasError = true;
         }
-        $strName = "";
-        if (\Input::post('name'))
-        {
+        $strName = '';
+        if (\Input::post('name')) {
             $strName = \Input::post('name');
         }
-        if (!$blnHasError)
-        {
+        if (!$blnHasError) {
             $longAccuracy = 0;
             $longSpeed = 0;
             $timeStamp = false;
-            $arrAdditionalData = array();
-            $arrAdditionalData['additionalData'] = array();
+            $arrAdditionalData = [];
+            $arrAdditionalData['additionalData'] = [];
 
-            if (\Input::post('latitude'))
-            {
+            if (\Input::post('latitude')) {
                 $arrAdditionalData['latitude'] = \Input::post('latitude');
             }
 
-            if (\Input::post('longitude'))
-            {
+            if (\Input::post('longitude')) {
                 $arrAdditionalData['longitude'] = \Input::post('longitude');
             }
 
-            if (\Input::post('accuracy'))
-            {
+            if (\Input::post('accuracy')) {
                 $arrAdditionalData['accuracy'] = \Input::post('accuracy');
             }
-            if (\Input::post('speed'))
-            {
+            if (\Input::post('speed')) {
                 $arrAdditionalData['speed'] = \Input::post('speed');
             }
-            if (\Input::post('timestamp'))
-            {
+            if (\Input::post('timestamp')) {
                 $timeStamp = \Input::post('timestamp');
             }
-            if (\Input::post('positiontype'))
-            {
+            if (\Input::post('positiontype')) {
                 $arrAdditionalData['positiontype'] = \Input::post('positiontype');
                 $arrAdditionalData['additionalData']['positiontype'] = \Input::post('positiontype');
             }
-            if (\Input::post('imei'))
-            {
+            if (\Input::post('imei')) {
                 $arrAdditionalData['imei'] = \Input::post('imei');
                 $arrAdditionalData['additionalData']['imei'] = \Input::post('imei');
             }
-            if (\Input::post('batterystatus'))
-            {
+            if (\Input::post('batterystatus')) {
                 $arrAdditionalData['batterystatus'] = \Input::post('batterystatus');
                 $arrAdditionalData['additionalData']['batterystatus'] = \Input::post('batterystatus');
             }
-            if (\Input::post('networkinfo'))
-            {
+            if (\Input::post('networkinfo')) {
                 $arrAdditionalData['networkinfo'] = \Input::post('networkinfo');
                 $arrAdditionalData['additionalData']['networkinfo'] = \Input::post('networkinfo');
             }
@@ -910,7 +761,6 @@ class TrackingService extends \Controller
             {
               \Tracking::setNewPosition($arrTrackData['trackUuid'], \Input::post('latitude'), \Input::post('longitude'), $longAccuracy, $longSpeed, $timeStamp, $arrAdditionalData);
             }*/
-
         }
 
         return true;
@@ -918,84 +768,66 @@ class TrackingService extends \Controller
 
     private function trackingLoginUser()
     {
-        if ($this->blnDebugMode)
-        {
-            \Input::setPost('user',\Input::get('user'));
-            \Input::setPost('password',\Input::get('password'));
+        if ($this->blnDebugMode) {
+            \Input::setPost('user', \Input::get('user'));
+            \Input::setPost('password', \Input::get('password'));
         }
 
         $blnHasError = false;
 
-        if (!\Input::post('user') && !\Input::post('password'))
-        {
+        if (!\Input::post('user') && !\Input::post('password')) {
             $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_user_password']);
             $blnHasError = true;
-        }
-        elseif (!\Input::post('user'))
-        {
+        } elseif (!\Input::post('user')) {
             $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_username']);
             $blnHasError = true;
-        }
-        elseif (!\Input::post('password'))
-        {
+        } elseif (!\Input::post('password')) {
             $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_password']);
             $blnHasError = true;
         }
 
-        if ($blnHasError)
-        {
+        if ($blnHasError) {
             return true;
         }
 
         \Input::setPost('username', \Input::post('user'));
 
         $this->import('FrontendUser', 'User');
-        if (!$this->User->login())
-        {
+        if (!$this->User->login()) {
             $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['wrong_login']);
             $blnHasError = true;
-        }
-        else
-        {
-
+        } else {
             $arrTrackingConfig = Tracking::getTrackingConfig();
 
-            if ($arrTrackingConfig['limitAccess'])
-            {
+            if ($arrTrackingConfig['limitAccess']) {
                 $arrAllowedGroups = $arrTrackingConfig['accessGroups'];
 
                 $blnIsInAccessGroup = false;
 
-                foreach ($arrAllowedGroups as $group)
-                {
-                    if ($this->User->isMemberOf($group))
-                    {
+                foreach ($arrAllowedGroups as $group) {
+                    if ($this->User->isMemberOf($group)) {
                         $blnIsInAccessGroup = true;
                     }
                 }
 
-                if (!$blnIsInAccessGroup)
-                {
+                if (!$blnIsInAccessGroup) {
                     $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_group_access']);
                     $blnHasError = true;
                 }
-
             }
 
-            if (!$blnHasError)
-            {
+            if (!$blnHasError) {
                 $this->import('Database');
                 $strUniqId = md5(uniqid());
-                $this->Database->prepare("UPDATE tl_member SET ssoHash=? WHERE id=?")->execute($strUniqId,$this->User->id);
+                $this->Database->prepare('UPDATE tl_member SET ssoHash=? WHERE id=?')->execute($strUniqId, $this->User->id);
 
                 $this->arrReturn['error'] = false;
                 $this->arrReturn['userId'] = $this->User->id;
                 $this->arrReturn['userName'] = $this->User->username;
                 $this->arrReturn['userHash'] = $strUniqId;
-                $this->arrReturn['userRealName'] = ($this->User->firstname ? ($this->User->firstname . " ") : '') . $this->User->lastname;
+                $this->arrReturn['userRealName'] = ($this->User->firstname ? ($this->User->firstname . ' ') : '') . $this->User->lastname;
                 $this->arrReturn['trackingConfig'] = $arrTrackingConfig;
             }
-
         }
 
         return true;
@@ -1005,15 +837,15 @@ class TrackingService extends \Controller
     {
         $this->arrReturn['error'] = false;
         $this->arrReturn['trackingConfig'] = Tracking::getTrackingConfig();
+
         return true;
     }
 
     private function trackingTest()
     {
-        $this->arrReturn = array
-        (
-            'error' => false
-        );
+        $this->arrReturn = [
+            'error' => false,
+        ];
 
         return true;
     }
@@ -1025,42 +857,32 @@ class TrackingService extends \Controller
 
     private function trackingRegisterDevice()
     {
-
         $blnHasError = false;
-        if (!\Input::post('configuration'))
-        {
+        if (!\Input::post('configuration')) {
             $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_config']);
             $blnHasError = true;
         }
 
-        if (!$blnHasError)
-        {
+        if (!$blnHasError) {
             $strType = \Input::post('type');
             $strImei = \Input::post('imei');
             $strToken = \Input::post('token');
             $intCofingId = \Input::post('configuration');
 
-
-            $arrSet = array
-            (
+            $arrSet = [
                 'pid' => $intCofingId,
                 'tstamp' => time(),
                 'type' => $strType,
                 'imei' => $strImei,
-                'token' => $strToken
-            );
+                'token' => $strToken,
+            ];
 
             $objDevice = \con4gis\TrackingBundle\Resources\contao\models\C4gTrackingDevicesModel::findBy('imei', $strImei);
 
-            if ($objDevice !== null)
-            {
-
-            }
-            else
-            {
+            if ($objDevice !== null) {
+            } else {
                 $objDevice = new \con4gis\TrackingBundle\Resources\contao\models\C4gTrackingDevicesModel();
             }
-
 
             $objDevice->setRow($arrSet)->save();
 
@@ -1072,32 +894,27 @@ class TrackingService extends \Controller
 
     private function getErrorReturn($varMessage)
     {
-        $arrReturn = array();
+        $arrReturn = [];
         $arrReturn['error'] = true;
 
-        if (is_array($varMessage))
-        {
-            foreach ($varMessage as $key=>$varValue)
-            {
+        if (is_array($varMessage)) {
+            foreach ($varMessage as $key => $varValue) {
                 $arrReturn[$key] = $varValue;
             }
-        }
-        else
-        {
+        } else {
             $arrReturn['message'] = $varMessage;
         }
+
         return $arrReturn;
     }
 
     private function trackingGetLastPositionForImei()
     {
-
         $intMaxAge = \Input::get('max') ? \Input::get('max') : 0;
 
         $objLastPosition = $this->getLastPositionForImei(\Input::get('imei'), $intMaxAge, true);
 
-        if ($objLastPosition->id)
-        {
+        if ($objLastPosition->id) {
             $this->arrReturn['error'] = false;
             $this->arrReturn['position'] = $objLastPosition->row();
         }
@@ -1105,76 +922,61 @@ class TrackingService extends \Controller
         return true;
     }
 
-    public function getLastPositionForImei($varImei, $intMaxAge=0, $blnRequestForApi=false)
+    public function getLastPositionForImei($varImei, $intMaxAge = 0, $blnRequestForApi = false)
     {
-
         $objTrackingBox = \con4gis\TrackingBundle\Resources\contao\models\C4gTrackingDevicesModel::findByImeiEndpiece($varImei);
 
-        if ($objTrackingBox === null)
-        {
-            if ($blnRequestForApi)
-            {
-                $this->arrReturn = $this->getErrorReturn(array
-                (
-                    "message" => "Device not found",
-                    "status" => 900
-                ));
+        if ($objTrackingBox === null) {
+            if ($blnRequestForApi) {
+                $this->arrReturn = $this->getErrorReturn([
+                    'message' => 'Device not found',
+                    'status' => 900,
+                ]);
+
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         $objLastPosition = $objTrackingBox->getRelated('lastPositionId');
 
         if ($objLastPosition === null) {
-            if ($blnRequestForApi)
-            {
-                $this->arrReturn = $this->getErrorReturn(array
-                (
-                    "message" => "No position found"
-                ));
+            if ($blnRequestForApi) {
+                $this->arrReturn = $this->getErrorReturn([
+                    'message' => 'No position found',
+                ]);
+
                 return true;
             }
-            else
-            {
+
+            return false;
+        }
+
+        if ($intMaxAge > 0) {
+            $strTimeStamp = time() - (60 * $intMaxAge);
+
+            if ($objLastPosition->tstamp < $strTimeStamp) {
+                if ($blnRequestForApi) {
+                    $this->arrReturn = $this->getErrorReturn([
+                        'message' => 'No position found',
+                    ]);
+
+                    return true;
+                }
+
                 return false;
             }
         }
 
-        if ($intMaxAge > 0)
-        {
-            $strTimeStamp = time() - (60 * $intMaxAge);
-
-            if ($objLastPosition->tstamp < $strTimeStamp)
-            {
-                if ($blnRequestForApi)
-                {
-                    $this->arrReturn = $this->getErrorReturn(array
-                    (
-                        "message" => "No position found"
-                    ));
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-
         return $objLastPosition;
-
     }
 
-    public function getLastPositionForDevice($intDeviceId, $intMaxAge=0)
+    public function getLastPositionForDevice($intDeviceId, $intMaxAge = 0)
     {
         $objDevice = \con4gis\TrackingBundle\Resources\contao\models\C4gTrackingDevicesModel::findOneBy('id', $intDeviceId);
 
-        if ($objDevice === null)
-        {
+        if ($objDevice === null) {
             return false;
         }
 
@@ -1184,12 +986,10 @@ class TrackingService extends \Controller
             return false;
         }
 
-        if ($intMaxAge > 0)
-        {
+        if ($intMaxAge > 0) {
             $strTimeStamp = time() - (60 * $intMaxAge);
 
-            if ($objLastPosition->tstamp < $strTimeStamp)
-            {
+            if ($objLastPosition->tstamp < $strTimeStamp) {
                 return false;
             }
         }
@@ -1208,27 +1008,24 @@ class TrackingService extends \Controller
         return true;
     }
 
-    public function getLastPositionForMember($intMemberId, $intMaxAge=0)
+    public function getLastPositionForMember($intMemberId, $intMaxAge = 0)
     {
-
         $db = \Database::getInstance();
-        $objLastTrackInfo = $db->prepare("SELECT * FROM tl_c4g_tracking_positions WHERE id = (SELECT lastPositionId FROM tl_c4g_tracking_tracks WHERE member=? AND tl_c4g_tracking_tracks.lastPositionId > 0 ORDER BY lastPositionId DESC LIMIT 1)")
+        $objLastTrackInfo = $db->prepare('SELECT * FROM tl_c4g_tracking_positions WHERE id = (SELECT lastPositionId FROM tl_c4g_tracking_tracks WHERE member=? AND tl_c4g_tracking_tracks.lastPositionId > 0 ORDER BY lastPositionId DESC LIMIT 1)')
                                             ->execute($intMemberId);
 
-        if ($objLastTrackInfo->numRows > 0)
-        {
-			if ($intMaxAge > 0)
-			{
-			    $strTimeStamp = time() - (60 * $intMaxAge);
+        if ($objLastTrackInfo->numRows > 0) {
+            if ($intMaxAge > 0) {
+                $strTimeStamp = time() - (60 * $intMaxAge);
 
-			    if ($objLastTrackInfo->tstamp < $strTimeStamp)
-			    {
-			        return false;
-			    }
-			}
-	        return $objLastTrackInfo;
+                if ($objLastTrackInfo->tstamp < $strTimeStamp) {
+                    return false;
+                }
+            }
+
+            return $objLastTrackInfo;
         }
+
         return false;
     }
-
 }
