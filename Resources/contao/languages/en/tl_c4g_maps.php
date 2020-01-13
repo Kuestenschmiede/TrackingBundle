@@ -18,11 +18,30 @@ $GLOBALS['TL_LANG']['tl_c4g_maps']['specialGroups'] = array('Chosen groups', 'Gr
 $GLOBALS['TL_LANG']['tl_c4g_maps']['useDatabaseStatus'] = array('Override member-defined visibility', 'Overrides the member-defined visibility of their trackingdata. (Not recommended!)');
 $GLOBALS['TL_LANG']['tl_c4g_maps']['databaseStatus'] = array('Override with following value', 'The value that should be used instead of the member-defined value.');
 
+$GLOBALS['TL_LANG']['tl_c4g_maps']['liveTrackingType'] = array('Live-Tracking-Type', 'Grouping and combining entries or selecting individual devices only');
+$GLOBALS['TL_LANG']['tl_c4g_maps']['liveTrackingDevices'] = array('Devices','Devices');
+
+$GLOBALS['TL_LANG']['tl_c4g_maps']['isFilterable'] = array('Structural element is filterable', 'Displays the filter button on the structural element and initializes the filter');
+$GLOBALS['TL_LANG']['tl_c4g_maps']['filterLocationStyle'] = array('Location style for filter tracks', 'Location style for filter tracks');
+
+$GLOBALS['TL_LANG']['tl_c4g_maps']['useIgnitionStatusStyle'] = array('Use extra style for ignition status','Use extra style for ignition status');
+$GLOBALS['TL_LANG']['tl_c4g_maps']['ignitionStatusStyleOn'] = array('Style for ignition on','Style for ignition on');
+$GLOBALS['TL_LANG']['tl_c4g_maps']['ignitionStatusStyleOff'] = array('Style for ignition off','Style for ignition off');
 
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tPois'] = 'Tracking – POIs';
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tTracks'] = 'Tracking – Tracks';
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tLive'] = 'Tracking – Live-View';
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tBoxes'] = 'Tracking – Telematic';
+
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['liveTrackingTypes']['tLive_all'] = "All devices combined";
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['liveTrackingTypes']['tLive_alleach'] = "All devices listed individually";
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['liveTrackingTypes']['tLive_group'] = "Grouped devices combined";
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['liveTrackingTypes']['tLive_groupeach'] = "Grouped devices listed individually";
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['liveTrackingTypes']['tLive_device'] = "Individual devices combined";
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['liveTrackingTypes']['tLive_deviceeach'] = "Individual devices listed individually";
+
+
+$GLOBALS['TL_LANG']['tl_c4g_maps']['live_tracking_legend'] = "Live-Tracking Settings";
 
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['memberVisibility'] = array
 (

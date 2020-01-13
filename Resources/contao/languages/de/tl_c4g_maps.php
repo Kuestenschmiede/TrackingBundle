@@ -33,9 +33,6 @@ $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tTracks'] = 'Tracking – Trac
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tLive'] = 'Tracking – Live-Ansicht';
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tBoxes'] = 'Tracking – Telematiksysteme';
 
-
-
-
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['liveTrackingTypes']['tLive_all'] = "Alle Geräte zusammengefasst";
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['liveTrackingTypes']['tLive_alleach'] = "Alle Geräte einzeln aufgelistet";
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['liveTrackingTypes']['tLive_group'] = "Gruppierte Geräte zusammengefasst";
