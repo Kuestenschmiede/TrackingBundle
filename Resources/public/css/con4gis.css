@@ -15,3 +15,7 @@
 li .c4g_tracking {
   display: none !important;
 }
+
+li .active .c4g_tracking {
+  display: block !important;
+}
