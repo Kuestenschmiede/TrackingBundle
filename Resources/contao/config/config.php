@@ -57,14 +57,14 @@ $GLOBALS['con4gis']['tracking']['apiBaseUrl'] = 'con4gis/api';
 /**
  * Hooks
  */
-$GLOBALS['TL_HOOKS']['c4gAddLocationsParent']['tracking'] = array('con4gis\TrackingBundle\Resources\contao\classes\TrackingFrontend','addLocations');
-$GLOBALS['TL_HOOKS']['c4gPostGetInfoWindowContent']['tracking'] = array('con4gis\TrackingBundle\Resources\contao\classes\TrackingFrontend','getInfoWindowContent');
-$GLOBALS['TL_CRON']['daily'][] = array('con4gis\TrackingBundle\Resources\contao\classes\TrackingFrontend', 'runCronJob');
+$GLOBALS['TL_HOOKS']['c4gAddLocationsParent']['tracking'] = array('con4gis\TrackingBundle\Classes\TrackingFrontend','addLocations');
+$GLOBALS['TL_HOOKS']['c4gPostGetInfoWindowContent']['tracking'] = array('con4gis\TrackingBundle\Classes\TrackingFrontend','getInfoWindowContent');
+$GLOBALS['TL_CRON']['daily'][] = array('con4gis\TrackingBundle\Classes\TrackingFrontend', 'runCronJob');
 
 /**
  * Rest-API
  */
-$GLOBALS['TL_API']['trackingService'] = 'con4gis\TrackingBundle\Resources\contao\classes\TrackingService';
+$GLOBALS['TL_API']['trackingService'] = 'con4gis\TrackingBundle\Classes\TrackingService';
 
 $GLOBALS['c4g_locationtypes'][] = 'tPois';
 $GLOBALS['c4g_locationtypes'][] = 'tTracks';

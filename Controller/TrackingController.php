@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-use con4gis\TrackingBundle\Resources\contao\classes\TrackingService;
+use con4gis\TrackingBundle\Classes\TrackingService;
 
 class TrackingController extends Controller
 {

@@ -1,7 +1,7 @@
 ## Load resources
 services:
     tracking.onLoadLayersGetTrackingData:
-        class: con4gis\TrackingBundle\Resources\contao\classes\TrackingFrontend
+        class: con4gis\TrackingBundle\Classes\TrackingFrontend
         tags:
             - { name: kernel.event_listener, event: maps.layers.load, method: addLocations, priority: 2048 }
 

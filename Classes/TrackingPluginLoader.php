@@ -10,7 +10,7 @@
  * @copyright  Küstenschmiede GmbH Software & Design
  * @link       https://www.con4gis.org
  */
-namespace con4gis\TrackingBundle\Resources\contao\classes;
+namespace con4gis\TrackingBundle\Classes;
 
 use con4gis\MapsBundle\Classes\Events\LoadMapResourcesEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
