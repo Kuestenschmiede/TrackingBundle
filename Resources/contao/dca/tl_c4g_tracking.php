@@ -13,6 +13,9 @@
 /**
  * Table tl_comments
  */
+
+use con4gis\CoreBundle\Classes\C4GVersionProvider;
+
 $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
 (
 
@@ -297,7 +300,7 @@ class tl_c4g_tracking extends Backend
     public function deviceButton($row, $href, $label, $title, $icon, $attributes)
     {
 
-        if ($GLOBALS['con4gis']['trackingAndroid']['installed'] || $GLOBALS['con4gis']['trackingBoxes']['installed'])
+        if (C4GVersionProvider::isInstalled('con4gis/tracking-android') || C4GVersionProvider::isInstalled('con4gis/tracking-boxes'))
         {
             $href .= '&amp;id='.$row['id'];
 

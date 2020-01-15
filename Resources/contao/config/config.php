@@ -10,15 +10,14 @@
  * @copyright  Küstenschmiede GmbH Software & Design
  * @link       https://www.con4gis.org
  */
-/**
- * Global settings
- */
-$GLOBALS['con4gis']['tracking']['installed'] = true;
 
 /**
  * Frontend Modules
  */
-array_insert( $GLOBALS['FE_MOD']['con4gis'], $GLOBALS['con4gis']['maps']['installed']?1:0, array
+
+use con4gis\CoreBundle\Classes\C4GVersionProvider;
+
+array_insert( $GLOBALS['FE_MOD']['con4gis'], C4GVersionProvider::isInstalled('con4gis/maps')?1:0, array
   (
   'c4g_ssologin'   => 'con4gis\TrackingBundle\Resources\contao\modules\ModuleSsoLogin',
   'c4g_tracklist'  => 'con4gis\TrackingBundle\Resources\contao\modules\ModuleTrackList',
