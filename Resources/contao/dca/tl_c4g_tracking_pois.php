@@ -29,7 +29,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
 			//array('tl_module', 'checkPermission')
 		),
         'onsubmit_callback'           => array(
-            array('\con4gis\CoreBundle\Classes\C4GAutomator', 'purgeApiCache')
+            array('\con4gis\MapsBundle\Classes\Caches\C4GMapsAutomator', 'purgeLayerApiCache')
         ),
 		'sql' => array
 		(
