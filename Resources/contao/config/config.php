@@ -33,6 +33,7 @@ $GLOBALS['BE_MOD']['con4gis'] = array_merge($GLOBALS['BE_MOD']['con4gis'], array
 (
     'c4g_tracking' => array
     (
+        'brick' => 'tracking',
         'tables'      => array
         (
             'tl_c4g_tracking',
@@ -42,7 +43,8 @@ $GLOBALS['BE_MOD']['con4gis'] = array_merge($GLOBALS['BE_MOD']['con4gis'], array
             'tl_c4g_tracking_positions',
             'tl_c4g_tracking_boxes',
             'tl_c4g_tracking_box_locations'
-        )
+        ),
+        'icon' => 'bundles/con4giscore/images/be-icons/edit.svg'
     )
 ));
 
