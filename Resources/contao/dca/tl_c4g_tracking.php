@@ -50,7 +50,8 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
 			'mode'                    => 2,
 			'fields'                  => array('name'),
 			'flag'                    => 1,
-			'panelLayout'             => 'sort,search,limit'
+			'panelLayout'             => 'sort,search,limit',
+            'icon'                    => 'bundles/con4giscore/images/be-icons/con4gis.org_dark.svg',
 		),
 		'label' => array
 		(
@@ -80,28 +81,28 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
             (
                 'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['pois'],
                 'href'                => 'table=tl_c4g_tracking_pois',
-                'icon'                => 'bundles/con4gistracking/images/be-icons/location_flag.png',
+                'icon'                => 'bundles/con4gistracking/images/be-icons/location_flag.svg',
                 //'button_callback'     => array('tl_theme', 'editModules')
             ),
             'tracks' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['tracks'],
                 'href'                => 'table=tl_c4g_tracking_tracks',
-                'icon'                => 'bundles/con4gistracking/images/be-icons/location_track.png',
+                'icon'                => 'bundles/con4gistracking/images/be-icons/location_track.svg',
                 //'button_callback'     => array('tl_theme', 'editLayout')
             ),
             'devices' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['devices'],
                 'href'                => 'table=tl_c4g_tracking_devices',
-                'icon'                => 'bundles/con4gistracking/images/be-icons/icon-devices.gif',
+                'icon'                => 'bundles/con4gistracking/images/be-icons/icon-devices.svg',
                 'button_callback'     => array('tl_c4g_tracking', 'deviceButton')
             ),
             /*'boxes' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['boxes'],
                 'href'                => 'table=tl_c4g_tracking_boxes',
-                'icon'                => 'system/modules/con4gis_tracking/assets/icon-devices.gif',
+                'icon'                => 'system/modules/con4gis_tracking/assets/icon-devices.svg',
             ),*/
             'edit' => array
             (
@@ -120,7 +121,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['show'],
 				'href'                => 'act=show',
-				'icon'                => 'show.gif',
+				'icon'                => 'show.svg',
 				'attributes'          => 'style="margin-right:3px"'
 			),
 		)

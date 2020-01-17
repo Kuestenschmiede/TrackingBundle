@@ -49,6 +49,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_tracks'] = array
 			'fields'                  => array('tstamp DESC', 'id DESC'),
 			'panelLayout'             => 'filter;sort,search,limit',
 			'headerFields'            => array('name', 'author', 'tstamp'),
+            'icon'                    => 'bundles/con4giscore/images/be-icons/con4gis.org_dark.svg',
 			//'child_record_callback'   => array('tl_module', 'listModule'),
 			//'child_record_class'      => 'no_padding'
 		),
@@ -87,7 +88,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_tracks'] = array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_tracks']['show'],
 				'href'                => 'act=show',
-				'icon'                => 'show.gif'
+				'icon'                => 'show.svg'
 			)
 		)
 	),
