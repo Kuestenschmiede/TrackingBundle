@@ -19,8 +19,7 @@ $GLOBALS['TL_LANG']['TMD']['pois'] = array('POIs', 'Getrackte interessante Punkt
 $GLOBALS['TL_LANG']['TMD']['tracks'] = array('Tracks', 'Getrackte Tracks');
 
 $GLOBALS['TL_LANG']['MOD']['c4g_tracking'] = array('Tracking: Konfiguration', 'Trackingkonfiguration und Geräteverwaltung');
-//$GLOBALS['TL_LANG']['MOD']['con4gis_tracking'] = array('Tracking', 'Tracking');
 
-$GLOBALS['TL_LANG']['FMD']['c4g_ssologin']   = array('Tracking (con4gis) - SSO-Login', 'Tracking (con4gis) - SSO-Login');
-$GLOBALS['TL_LANG']['FMD']['c4g_tracklist']  = array('Tracking (con4gis) - TrackList', 'Tracking (con4gis) - TrackList');
-$GLOBALS['TL_LANG']['FMD']['c4g_trackedit']  = array('Tracking (con4gis) - TrackEdit', 'Tracking (con4gis) - TrackEdit');
+$GLOBALS['TL_LANG']['FMD']['c4g_tracking_ssologin']   = array('tracking: SSO-Login', 'Tracking (con4gis) - SSO-Login');
+$GLOBALS['TL_LANG']['FMD']['c4g_tracking_tracklist']  = array('tracking: Streckenliste', 'Tracking (con4gis) - TrackList');
+$GLOBALS['TL_LANG']['FMD']['c4g_tracking_trackedit']  = array('tracking: Strecken editieren', 'Tracking (con4gis) - TrackEdit');

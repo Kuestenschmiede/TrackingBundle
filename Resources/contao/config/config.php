@@ -17,14 +17,11 @@
 
 use con4gis\CoreBundle\Classes\C4GVersionProvider;
 
-array_insert( $GLOBALS['FE_MOD']['con4gis'], C4GVersionProvider::isInstalled('con4gis/maps')?1:0, array
-  (
-  'c4g_ssologin'   => 'con4gis\TrackingBundle\Resources\contao\modules\ModuleSsoLogin',
-  'c4g_tracklist'  => 'con4gis\TrackingBundle\Resources\contao\modules\ModuleTrackList',
-  'c4g_trackedit'  => 'con4gis\TrackingBundle\Resources\contao\modules\ModuleTrackEdit'
-  )
-);
+$GLOBALS['FE_MOD']['con4gis']['c4g_tracking_ssologin'] = 'con4gis\TrackingBundle\Resources\contao\modules\ModuleSsoLogin';
+$GLOBALS['FE_MOD']['con4gis']['c4g_tracking_tracklist'] = 'con4gis\TrackingBundle\Resources\contao\modules\ModuleTrackList';
+$GLOBALS['FE_MOD']['con4gis']['c4g_tracking_trackedit'] = 'con4gis\TrackingBundle\Resources\contao\modules\ModuleTrackEdit';
 
+asort($GLOBALS['FE_MOD']['con4gis']);
 
 /**
  * Backend Modules

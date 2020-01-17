@@ -20,8 +20,7 @@ $GLOBALS['TL_LANG']['TMD']['pois'] = array('POIs', 'Tracked points of interest')
 $GLOBALS['TL_LANG']['TMD']['tracks'] = array('Tracks', 'Tracks');
 
 $GLOBALS['TL_LANG']['MOD']['c4g_tracking'] = array('Tracking: configuration', 'Tracking');
-//$GLOBALS['TL_LANG']['MOD']['con4gis_tracking'] = array('Tracking', 'Tracking');
 
-$GLOBALS['TL_LANG']['FMD']['c4g_ssologin']   = 'Tracking (con4gis) - SSO-Login';
-$GLOBALS['TL_LANG']['FMD']['c4g_tracklist']  = 'Tracking (con4gis) - Tracklist';
-$GLOBALS['TL_LANG']['FMD']['c4g_trackedit']  = 'Tracking (con4gis) - Trackedit';
+$GLOBALS['TL_LANG']['FMD']['c4g_tracking_ssologin']   = array('tracking: SSO-Login', 'Tracking (con4gis) - SSO-Login');
+$GLOBALS['TL_LANG']['FMD']['c4g_tracking_tracklist']  = array('tracking: Tracklist', 'Tracking (con4gis) - TrackList');
+$GLOBALS['TL_LANG']['FMD']['c4g_tracking_trackedit']  = array('tracking: Track editing', 'Tracking (con4gis) - TrackEdit');
