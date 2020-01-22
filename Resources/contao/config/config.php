@@ -45,10 +45,6 @@ $GLOBALS['BE_MOD']['con4gis'] = array_merge($GLOBALS['BE_MOD']['con4gis'], array
     )
 ));
 
-if (TL_MODE == "BE") {
-    $GLOBALS['TL_CSS'][] = '/bundles/con4gistracking/css/con4gis.css';
-}
-
 $GLOBALS['c4g_tracking_devicetypes'] = array();
 $GLOBALS['con4gis']['tracking']['apiBaseUrl'] = 'con4gis/api';
 
