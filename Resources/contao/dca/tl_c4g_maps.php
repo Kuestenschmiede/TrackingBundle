@@ -20,14 +20,14 @@ $GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['__selector__'][] = 'liveTrackingT
 $GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['__selector__'][] = 'isFilterable';
 $GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['__selector__'][] = 'useIgnitionStatusStyle';
 
-$GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['tPois'] = '{general_legend},name,profile,profile_mobile,published;{map_legend},is_map;{location_legend},location_type,tDontShowIfEmpty,memberVisibility,useDatabaseStatus,locstyle,data_layername,data_hidelayer,popup_info,routing_to,loc_linkurl,loc_onclick_zoomto,loc_minzoom,loc_maxzoom;{protection_legend:hide},protect_element;';
+$GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['tPois'] = '{general_legend},name,location_type;{location_legend},tDontShowIfEmpty,memberVisibility,useDatabaseStatus,locstyle,data_layername,data_hidelayer,popup_info,routing_to,loc_linkurl,loc_onclick_zoomto,loc_minzoom,loc_maxzoom;{protection_legend:hide},protect_element;';
 
-$GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['tTracks'] = '{general_legend},name,profile,profile_mobile,published;{map_legend},is_map;{location_legend},location_type,tDontShowIfEmpty,memberVisibility,useDatabaseStatus,locstyle,data_layername,data_hidelayer,loc_onclick_zoomto,loc_minzoom,loc_maxzoom;{protection_legend:hide},protect_element;';
+$GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['tTracks'] = '{general_legend},name,location_type;{location_legend},tDontShowIfEmpty,memberVisibility,useDatabaseStatus,locstyle,data_layername,data_hidelayer,loc_onclick_zoomto,loc_minzoom,loc_maxzoom;{protection_legend:hide},protect_element;';
 
-$GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['tBoxes'] = '{general_legend},name,profile,profile_mobile,published;{map_legend},is_map;{location_legend},location_type,tDontShowIfEmpty,memberVisibility,useDatabaseStatus,locstyle,data_layername,data_hidelayer,loc_onclick_zoomto,loc_minzoom,loc_maxzoom;{protection_legend:hide},protect_element;';
+$GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['tBoxes'] = '{general_legend},name,location_type;{location_legend},tDontShowIfEmpty,memberVisibility,useDatabaseStatus,locstyle,data_layername,data_hidelayer,loc_onclick_zoomto,loc_minzoom,loc_maxzoom;{protection_legend:hide},protect_element;';
 
 
-$defaultTrackingLivePalette = '{general_legend},name,profile,profile_mobile,published;{map_legend},is_map;{location_legend},location_type,memberVisibility,useDatabaseStatus,locstyle,data_layername,data_hidelayer,loc_only_in_parent,loc_minzoom,loc_maxzoom,enablePopup,popupType,popup_info;{live_tracking_legend},liveTrackingType,isFilterable,useIgnitionStatusStyle;{protection_legend:hide},protect_element;';
+$defaultTrackingLivePalette = '{general_legend},name,location_type;{location_legend},memberVisibility,useDatabaseStatus,locstyle,data_layername,data_hidelayer,loc_only_in_parent,loc_minzoom,loc_maxzoom,enablePopup,popupType,popup_info;{live_tracking_legend},liveTrackingType,isFilterable,useIgnitionStatusStyle;{protection_legend:hide},protect_element;';
 
 
 $GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['tLive'] = $defaultTrackingLivePalette;
