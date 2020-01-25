@@ -28,10 +28,10 @@ $GLOBALS['TL_LANG']['tl_c4g_maps']['useIgnitionStatusStyle'] = array('Use extra 
 $GLOBALS['TL_LANG']['tl_c4g_maps']['ignitionStatusStyleOn'] = array('Style for ignition on','Style for ignition on');
 $GLOBALS['TL_LANG']['tl_c4g_maps']['ignitionStatusStyleOff'] = array('Style for ignition off','Style for ignition off');
 
-$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tPois'] = 'Tracking – POIs';
-$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tTracks'] = 'Tracking – Tracks';
-$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tLive'] = 'Tracking – Live-View';
-$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tBoxes'] = 'Tracking – Telematic';
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tPois'] = '[tracking] POIs';
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tTracks'] = '[tracking] Tracks';
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tLive'] = '[tracking] Live-View';
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tBoxes'] = '[tracking] Telematic';
 
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['liveTrackingTypes']['tLive_all'] = "All devices combined";
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['liveTrackingTypes']['tLive_alleach'] = "All devices listed individually";
