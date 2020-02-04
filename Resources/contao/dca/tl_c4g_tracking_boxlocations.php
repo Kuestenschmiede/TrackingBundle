@@ -49,7 +49,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_boxlocations'] = array
             'fields'                  => array('tstamp'),
             'panelLayout'             => 'filter;sort,search,limit',
             'headerFields'            => array('tstamp'),
-            'icon'                    => 'bundles/con4giscore/images/be-icons/con4gis.org_dark.svg',
+            'icon'                    => 'bundles/con4giscore/images/be-icons/con4gis_blue.svg',
             //'child_record_callback'   => array('tl_module', 'listModule'),
             //'child_record_class'      => 'no_padding'
         ),

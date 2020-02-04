@@ -51,7 +51,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
 			'fields'                  => array('name'),
 			'flag'                    => 1,
 			'panelLayout'             => 'sort,search,limit',
-            'icon'                    => 'bundles/con4giscore/images/be-icons/con4gis.org_dark.svg',
+            'icon'                    => 'bundles/con4giscore/images/be-icons/con4gis_blue.svg',
 		),
 		'label' => array
 		(
