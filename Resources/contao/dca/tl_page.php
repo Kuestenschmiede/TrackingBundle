@@ -15,11 +15,31 @@
  * Table tl_page
  */
 
-Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addLegend('c4gtracking_legend', 'layout_legend')
-    ->addField('c4gtracking_configuration', 'c4gtracking_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->applyToPalette('root', 'tl_page')
-    ->applyToPalette('rootfallback', 'tl_page');
+//do not apply to rootfallback palette before 4.9
+use Contao\CoreBundle\Util\PackageUtil;
+
+$version = explode('.', PackageUtil::getContaoVersion());
+$rootfallback = true;
+if ($version) {
+    $major   = intval($version[0]);
+    $minor   = intval($version[1]);
+    if ($major && $minor && (intval($major) <= 4) && (intval($minor) <= 8)) {
+        $rootfallback = false;
+    }
+}
+
+if ($rootfallback) {
+    Contao\CoreBundle\DataContainer\PaletteManipulator::create()
+        ->addLegend('c4gtracking_legend', 'layout_legend')
+        ->addField('c4gtracking_configuration', 'c4gtracking_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+        ->applyToPalette('root', 'tl_page')
+        ->applyToPalette('rootfallback', 'tl_page');
+} else {
+    Contao\CoreBundle\DataContainer\PaletteManipulator::create()
+        ->addLegend('c4gtracking_legend', 'layout_legend')
+        ->addField('c4gtracking_configuration', 'c4gtracking_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+        ->applyToPalette('root', 'tl_page');
+}
 
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['c4gtracking_configuration'] = array
