@@ -111,6 +111,10 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_positions'] = array
 		(
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
+        'importId' => array
+        (
+            'sql'                     => "int(10) unsigned NOT NULL default '0'"
+        ),
 		'ptable' => array
 		(
 			'sql'                     => "varchar(64) NOT NULL default ''"
