@@ -113,7 +113,8 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_positions'] = array
 		),
         'importId' => array
         (
-            'sql'                     => "int(10) unsigned NOT NULL default '0'"
+            'sql'                     => "int(10) unsigned NOT NULL default '0'",
+            'eval'                    => array('doNotCopy' => true)
         ),
 		'ptable' => array
 		(
