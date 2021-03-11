@@ -23,7 +23,7 @@
   },
   "require": {
     "contao/core-bundle": "^4.4",
-    "con4gis/maps": "^7.0",
+    "con4gis/maps": "^7.3",
     "vinyvicente/doctrine-point-type": "^1.1"
   },
   "conflict": {
