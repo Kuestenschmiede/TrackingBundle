@@ -1,4 +1,7 @@
 # con4gis-TrackingBundle
+
+Attention! This bundle is not under active development. If needed, you can charge the Küstenschmiede or create pull requests.
+
 ## Overview
 The tracking brick of the Contao GIS-kit **con4gis**. A telematic interface. Useful with con4gis-Maps and con4gis-TrackingAndroid.
 
