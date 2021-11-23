@@ -186,6 +186,8 @@ class TrackingFrontend extends \Frontend
 
         if (in_array($child['type'], $this->arrAllowedLocationTypes)) {
             $arrData = [];
+            $arrData['excludeFromSingleLayer'] = true;
+            $arrData['async_content'] = 5;
 
             switch ($child['type']) {
                 case 'tPois':
@@ -302,7 +304,7 @@ class TrackingFrontend extends \Frontend
                         [
                           'type' => 'urlData',
                           'format' => 'GeoJSON',
-                          'locationStyle' => $child['raw']->locstyle,
+                          'locationStyle' => $child['locstyle'] ?: $child['raw']->locstyle,
                           'data' => [
                             'url' => $strUrl,
                           ],

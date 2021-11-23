@@ -113,9 +113,10 @@ class TrackingService extends \Controller
                 // Todo: alle Daten im properties-objekt bereit stellen
             }
             $arrReturn = [];
-            $arrReturn['type'] = 'FeatureCollection';
-            $arrReturn['features'] = $arrFeatures;
-
+            $arrReturn = json_encode([
+                'type'      => 'FeatureCollection',
+                'features'  => $arrFeatures
+            ]);
             $this->arrReturn = $arrReturn;
 
             return true;
