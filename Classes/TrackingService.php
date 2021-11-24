@@ -12,6 +12,8 @@
  */
 namespace con4gis\TrackingBundle\Classes;
 
+use con4gis\MapsBundle\Resources\contao\models\C4gMapsModel;
+
 /**
  * Class TrackingService
  * @package c4g
@@ -91,13 +93,25 @@ class TrackingService extends \Controller
         }
 
         if ($objPositions->numRows) {
+            if($intMapsItem) {
+                $objMap = C4gMapsModel::findById($intMapsItem);
+            }
             $arrFeatures = [];
             while ($objPositions->next()) {
+                if ($objMap && $objMap->useIgnitionStatusStyle) {
+                    if ($objPositions->boxStatus == 12) {
+                        $locstyle = $objMap->ignitionStatusStyleOn;
+                    }
+                    else {
+                        $locstyle = $objMap->ignitionStatusStyleOff;
+                    }
+                }
                 $arrFeatures[] = [
                     'type' => 'Feature',
                     'properties' => [
                         'name' => $objPositions->name ? $objPositions->name : $objPositions->comment,
                         'positionId' => $objPositions->id,
+                        'locstyle' => $locstyle,
                         'popup' => [
                             'content' => 'devices:live;id,' . $objPositions->id . ';maps,' . $intMapsItem,
                         ],
