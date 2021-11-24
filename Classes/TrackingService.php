@@ -86,6 +86,9 @@ class TrackingService extends \Controller
             $intGroupId = \Input::get('useGroup');
             $objPositions = $this->Database->prepare('SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0 AND tl_c4g_tracking_devices.groupId=?')
                                             ->execute($intGroupId);
+        } else if ($intMapsItem) {
+            $objPositions = $this->Database->prepare('SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0 AND tl_c4g_tracking_devices.mapStructureId=?')
+                ->execute($intMapsItem);
         } else {
             // Fallback: keine weiteren Einstellungen -> alle Geräte mit Positionsdaten
             $objPositions = $this->Database->prepare('SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0')

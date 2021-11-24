@@ -183,7 +183,8 @@ class TrackingFrontend extends \Frontend
         $child = $event->getLayerData();
         $level = $child['pid'];
         $stringClass = $GLOBALS['con4gis']['stringClass'];
-
+        $objMap = C4gMapsModel::findById($child['id']);
+        $child['raw'] = $objMap;
         if (in_array($child['type'], $this->arrAllowedLocationTypes)) {
             $arrData = [];
             $arrData['excludeFromSingleLayer'] = true;
@@ -311,7 +312,7 @@ class TrackingFrontend extends \Frontend
                           'settings' => [
                             'loadAsync' => true,
                             'refresh' => true,
-                            // "interval" => getTrackingConfig -> getHTTPInterval
+                            'interval' => 60000,
                             'crossOrigin' => false,
                           ],
                         ],
