@@ -365,6 +365,8 @@ class TrackingFrontend extends \Frontend
             'hide' => $child['hide'] > 0 ? $child['hide'] : '',
             'filterable' => $child['raw']->isFilterable ? $arrFilterData : 0,
             'display' => $child['display'],
+            'excludeFromSingleLayer' => true,
+            'async_content' => true,
             'content' => [
               [
                 'id' => '',

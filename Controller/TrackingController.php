@@ -35,7 +35,9 @@ class TrackingController extends Controller
             }
         }
         $trackingService = new TrackingService();
-        return JsonResponse::create($trackingService->generate($methodString));
+        $response = $trackingService->generate($methodString);
+        $response = \GuzzleHttp\json_decode($response, true);
+        return JsonResponse::create($response);
     }
 
     public function trackingLegacyAction(Request $request)
