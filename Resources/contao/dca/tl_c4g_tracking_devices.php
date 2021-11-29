@@ -234,8 +234,7 @@ class tl_c4g_tracking_devices extends Backend
 
 	public function getLocStyles(DataContainer $dc)
 	{
-		$profile = $this->Database->prepare("SELECT locstyles FROM tl_c4g_map_profiles WHERE id=?")->execute($dc->activeRecord->profile);
-    	$locStyles = $this->Database->prepare("SELECT id,name FROM tl_c4g_map_locstyles ORDER BY name")->execute();
+		$locStyles = $this->Database->prepare("SELECT id,name FROM tl_c4g_map_locstyles ORDER BY name")->execute();
 		while ($locStyles->next()) {
 			$return[$locStyles->id] = $locStyles->name;
 		}

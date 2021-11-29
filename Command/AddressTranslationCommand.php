@@ -16,6 +16,7 @@ namespace con4gis\TrackingBundle\Command;
 use con4gis\ProjectsBundle\Classes\Common\C4GBrickCommon;
 use Contao\Database;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,7 +27,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * to actual addresses.
  * @package con4gis\TrackingBundle\Command
  */
-class AddressTranslationCommand extends ContainerAwareCommand
+class AddressTranslationCommand extends Command
 {
     protected function configure()
     {
