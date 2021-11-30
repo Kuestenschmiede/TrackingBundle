@@ -113,6 +113,7 @@ class TrackingService extends \Controller
                     'type' => 'Feature',
                     'properties' => [
                         'name' => $objPositions->name ? $objPositions->name : $objPositions->comment,
+                        'tooltip' => $objPositions->name ? $objPositions->name : $objPositions->comment,
                         'positionId' => $objPositions->id,
                         'locstyle' => $locstyle,
                         'popup' => [
