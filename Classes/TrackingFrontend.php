@@ -254,74 +254,71 @@ class TrackingFrontend extends \Frontend
                     $arrData['filterable'] = $child['raw']->isFilterable ? 1 : 0;
 
                     if ($child['raw']->liveTrackingType == 'tLive_alleach' || $child['raw']->liveTrackingType == 'tLive_groupeach' || $child['raw']->liveTrackingType == 'tLive_deviceeach') {
-                        $arrChildData = $this->getLiveChildData($child);
-                        $arrData['hasChilds'] = true;
-                        $arrData['childsCount'] = sizeof($arrChildData);
-                        $arrData['childs'] = $arrChildData;
-
+                        $arrData['split_geojson'] = 1;
+                        $arrData['geojson_attributes'] = "name";
                         if ($child['raw']->isFilterable) {
                             $arrData['filterable'] = 0;//"&maps=" . $child['id'];
                         }
-                    } else {
-                        if ($child['raw']->liveTrackingType == 'tLive_group') {
-                            $strUrl = $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . '/trackingService?method=getLive&maps=' . $child['id'] . '&useGroup=' . $child['id'];
-                            if ($child['raw']->isFilterable) {
-                                $arrData['filterable'] = [];
-                                $arrData['filterable']['urlParam'] = '&maps=' . $child['id'] . '&useGroup=' . $child['id'];
+                    }
+                    if ($child['raw']->liveTrackingType == 'tLive_group' || $child['raw']->liveTrackingType == 'tLive_groupeach') {
+                        $strUrl = $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . '/trackingService?method=getLive&maps=' . $child['id'] . '&useGroup=' . $child['id'];
+                        if ($child['raw']->isFilterable) {
+                            $arrData['filterable'] = [];
+                            $arrData['filterable']['urlParam'] = '&maps=' . $child['id'] . '&useGroup=' . $child['id'];
 
-                                if ($child['raw']->filterLocationStyle) {
-                                    $arrData['filterable']['locationStyle'] = $child['raw']->filterLocationStyle;
-                                }
-                            }
-                        } elseif ($child['raw']->liveTrackingType == 'tLive_device') {
-                            $arrDevices = deserialize($child['raw']->liveTrackingDevices, true);
-                            $strUrl = $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . '/trackingService?method=getLive&maps=' . $child['id'] . '&id[]=' . implode('&id[]=', $arrDevices);
-                            if ($child['raw']->isFilterable) {
-                                $arrData['filterable'] = [];
-                                $arrData['filterable']['urlParam'] = '&maps=' . $child['id'];
-
-                                if ($child['raw']->filterLocationStyle) {
-                                    $arrData['filterable']['locationStyle'] = $child['raw']->filterLocationStyle;
-                                }
-                                //$arrData['filterable'] = array(
-                              //    "type" => "tLive_device",
-                              //    "maps" => $child['id'],
-                              //    "devices" => $arrDevices
-                              //);//"maps=" . $child['id'] . "&id[]=" . implode('&id[]=', $arrDevices);
-                            }
-                        } else {
-                            $strUrl = $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . '/trackingService?method=getLive&maps=' . $child['id'] . '';
-                            if ($child['raw']->isFilterable) {
-                                $arrData['filterable'] = [];
-                                $arrData['filterable']['urlParam'] = '&maps=' . $child['id'];
-
-                                if ($child['raw']->filterLocationStyle) {
-                                    $arrData['filterable']['locationStyle'] = $child['raw']->filterLocationStyle;
-                                }
+                            if ($child['raw']->filterLocationStyle) {
+                                $arrData['filterable']['locationStyle'] = $child['raw']->filterLocationStyle;
                             }
                         }
+                    } elseif ($child['raw']->liveTrackingType == 'tLive_device' || $child['raw']->liveTrackingType == 'tLive_deviceeach') {
+                        $arrDevices = deserialize($child['raw']->liveTrackingDevices, true);
+                        $strUrl = $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . '/trackingService?method=getLive&maps=' . $child['id'] . '&id[]=' . implode('&id[]=', $arrDevices);
+                        if ($child['raw']->isFilterable) {
+                            $arrData['filterable'] = [];
+                            $arrData['filterable']['urlParam'] = '&maps=' . $child['id'];
 
-                        $arrData['content'] = [
-                        [
-                          'type' => 'urlData',
-                          'format' => 'GeoJSON',
-                          'locationStyle' => $child['locstyle'] ?: $child['raw']->locstyle,
-                          'data' => [
-                            'url' => $strUrl,
-                          ],
-                          'settings' => [
-                            'loadAsync' => true,
-                            'refresh' => true,
-                            'interval' => 60000,
-                            'crossOrigin' => false,
-                          ],
-                        ],
-                      ];
+                            if ($child['raw']->filterLocationStyle) {
+                                $arrData['filterable']['locationStyle'] = $child['raw']->filterLocationStyle;
+                            }
+                            //$arrData['filterable'] = array(
+                          //    "type" => "tLive_device",
+                          //    "maps" => $child['id'],
+                          //    "devices" => $arrDevices
+                          //);//"maps=" . $child['id'] . "&id[]=" . implode('&id[]=', $arrDevices);
+                        }
+                    } else {
+                        $strUrl = $GLOBALS['con4gis']['tracking']['apiBaseUrl'] . '/trackingService?method=getLive&maps=' . $child['id'] . '';
+                        if ($child['raw']->isFilterable) {
+                            $arrData['filterable'] = [];
+                            $arrData['filterable']['urlParam'] = '&maps=' . $child['id'];
+
+                            if ($child['raw']->filterLocationStyle) {
+                                $arrData['filterable']['locationStyle'] = $child['raw']->filterLocationStyle;
+                            }
+                        }
                     }
 
-                    //$GLOBALS['TL_BODY'][] = '<script src="system/modules/con4gis_tracking/assets/liveTracking.js"></script>';
+                    $arrData['content'] = [
+                    [
+                      'type' => 'urlData',
+                      'format' => 'GeoJSON',
+                      'locationStyle' => $child['locstyle'] ?: $child['raw']->locstyle,
+                      'data' => [
+                        'url' => $strUrl,
+                      ],
+                      'settings' => [
+                        'loadAsync' => true,
+                        'refresh' => true,
+                        'interval' => 60000,
+                        'crossOrigin' => false,
+                      ],
+                    ],
+                  ];
 
-                    break;
+
+                //$GLOBALS['TL_BODY'][] = '<script src="system/modules/con4gis_tracking/assets/liveTracking.js"></script>';
+
+                break;
             }
             $event->setLayerData($arrData);
 
