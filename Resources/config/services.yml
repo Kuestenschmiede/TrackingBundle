@@ -9,3 +9,11 @@ services:
     con4gis\TrackingBundle\Command\AddressTranslationCommand:
         tags:
             - { name: 'console.command', command: 'tracking:translate-addresses' }
+
+
+    tracking.onPerformSearchDoIt:
+        class: con4gis\TrackingBundle\Classes\Listener\PerformSearchListener
+        tags:
+            - { name: kernel.event_listener, event: maps.search.perform, method: onPerformSearchDoIt, priority: 422 }
+        arguments:
+            - "@request_stack"
