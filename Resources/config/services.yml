@@ -17,3 +17,8 @@ services:
             - { name: kernel.event_listener, event: maps.search.perform, method: onPerformSearchDoIt, priority: 422 }
         arguments:
             - "@request_stack"
+
+    tracking.onLoadMapDataDoIt:
+        class: con4gis\TrackingBundle\Classes\Listener\LoadMapDataListener
+        tags:
+            - { name: kernel.event_listener, event: maps.mapdata.load, method: onLoadMapDataDoIt, priority: 6900 }
