@@ -86,7 +86,7 @@ class TrackingService extends \Controller
             $intGroupId = \Input::get('useGroup');
             $objPositions = $this->Database->prepare('SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0 AND tl_c4g_tracking_devices.groupId=?')
                                             ->execute($intGroupId);
-        } else if ($intMapsItem) {
+        } elseif ($intMapsItem) {
             $objPositions = $this->Database->prepare('SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0 AND tl_c4g_tracking_devices.mapStructureId=?')
                 ->execute($intMapsItem);
         } else {
@@ -96,7 +96,7 @@ class TrackingService extends \Controller
         }
 
         if ($objPositions->numRows) {
-            if($intMapsItem) {
+            if ($intMapsItem) {
                 $objMap = C4gMapsModel::findById($intMapsItem);
             }
             $arrFeatures = [];
@@ -104,8 +104,7 @@ class TrackingService extends \Controller
                 if ($objMap && $objMap->useIgnitionStatusStyle) {
                     if ($objPositions->boxStatus == 12) {
                         $locstyle = $objMap->ignitionStatusStyleOn;
-                    }
-                    else {
+                    } else {
                         $locstyle = $objMap->ignitionStatusStyleOff;
                     }
                 }
@@ -132,8 +131,8 @@ class TrackingService extends \Controller
             }
             $arrReturn = [];
             $arrReturn = json_encode([
-                'type'      => 'FeatureCollection',
-                'features'  => $arrFeatures
+                'type' => 'FeatureCollection',
+                'features' => $arrFeatures,
             ]);
             $this->arrReturn = $arrReturn;
 
