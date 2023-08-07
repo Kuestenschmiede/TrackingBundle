@@ -9,7 +9,9 @@ services:
     con4gis\TrackingBundle\Command\AddressTranslationCommand:
         tags:
             - { name: 'console.command', command: 'tracking:translate-addresses' }
-
+        arguments:
+            - '@contao.framework'
+                
 
     tracking.onPerformSearchDoIt:
         class: con4gis\TrackingBundle\Classes\Listener\PerformSearchListener

@@ -13,8 +13,11 @@
 namespace con4gis\TrackingBundle\Command;
 
 
-use con4gis\ProjectsBundle\Classes\Common\C4GBrickCommon;
+use con4gis\CoreBundle\Classes\C4GUtils;
+use con4gis\MapsBundle\Resources\contao\models\C4gMapProfilesModel;
+use con4gis\TrackingPortalBundle\Resources\contao\models\C4gTrackingPortalPositionsModel;
 use Contao\Database;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -29,6 +32,19 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class AddressTranslationCommand extends Command
 {
+    private ContaoFramework $framework;
+    private Database $db;
+    public function __construct(ContaoFramework $framework)
+    {
+        $this->framework = $framework;
+        if (!$this->framework->isInitialized()) {
+            $this->framework->initialize();
+        }
+        $this->db = Database::getInstance();
+        parent::__construct();
+
+    }
+
     protected function configure()
     {
         $this->setName('tracking:translate-addresses')
@@ -43,15 +59,18 @@ class AddressTranslationCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->getContainer()->get('contao.framework')->initialize();
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $db = Database::getInstance();
-        $arrSettings = $db->execute("SELECT * FROM tl_c4g_settings LIMIT 1")->fetchAssoc();
+        $arrSettings = $this->db->execute("SELECT * FROM tl_c4g_settings LIMIT 1")->fetchAssoc();
         $profileId = $arrSettings['defaultprofile'];
         if (!$profileId) {
             // abort when no profile was found
             $output->writeln("No profile found in the settings! Aborting...");
-            return;
+            return Command::INVALID;
+        }
+        $objMapsProfile = C4gMapProfilesModel::findBy('id', $profileId);
+        if ($objMapsProfile) {
+            if ($objMapsProfile->geopicker_anonymous) {
+                $anonymous = true;
+            }
         }
         $chunksize = $input->getOption("chunksize");
         if (!$chunksize) {
@@ -61,22 +80,38 @@ class AddressTranslationCommand extends Command
         }
         $counter = 0;
         // get position data without addresses
-        $arrPositions = $db->prepare("SELECT * FROM tl_c4g_tracking_positions WHERE COALESCE(address, '') = '' LIMIT ?")
-            ->execute($chunksize)->fetchAllAssoc();
+        $arrPositions = $this->db->prepare("SELECT DISTINCT latitude, longitude FROM tl_c4g_tracking_positions WHERE COALESCE(address, '') = '' AND serverTstamp > 1688162400 LIMIT $chunksize")
+            ->execute()->fetchAllAssoc();
         $output->writeln("Anzahl datensätze ist " . count($arrPositions));
+        $model = new C4gTrackingPortalPositionsModel();
         foreach ($arrPositions as $key => $position) {
-            $position['address'] = C4GBrickCommon::convert_coordinates_to_address($position['latitude'], $position['longitude'], $profileId);
+            if ($position['latitude'] && $position['longitude']) {
+                    $address = C4gTrackingPortalPositionsModel::lookupCache($this->db, $position['latitude'], $position['longitude']);
+                    if ($address == 'not cached') {
+                        $address =  C4GUtils::reverseGeocode([$position['longitude'], $position['latitude']], true);
+                    }
+                if ($address) {
+                    $strAddress =  '';
+                    $strAddress .=  $address['street'];
+                    if (!$anonymous) {
+                        $strAddress .= $address['housenumber'] ? " " . $address['housenumber'] : "";
+                    }
+                    $strAddress .= $address['postalcode'] ? ", " . $address['postalcode'] : "";
+                    $strAddress .= $address['localadmin'] ? " " . $address['localadmin'] : "";
+                    $position['address'] = $strAddress;
+                }
+            }
             if ($position['address'] === "") {
-                $output->writeln("Could not convert coordinates to address for position ID " . $position['id']);
+                $output->writeln("Could not convert coordinates to address for position (" . $position['longitude'] . " , " . $position['latitude'] . ")");
             } else {
                 // update database
-                $db->prepare("UPDATE tl_c4g_tracking_positions SET address=? WHERE id = ?")->execute($position['address'], $position['id']);
-                $output->writeln("Updated address for position ID " . $position['id']);
-                $counter++;
+                $result = $this->db->prepare("UPDATE tl_c4g_tracking_positions SET address=? WHERE longitude =? AND latitude =? AND address=''")->execute($position['address'], $position['longitude'], $position['latitude']);
+                $output->writeln("Updated address for position (" . $position['longitude'] . " , " . $position['latitude'] . ")");
+                $counter ++;
             }
         }
-        $output->writeln("Translated adresseses.");
-        $output->writeln("Processed " . $counter . " datasets");
+        $output->writeln("Translated adDresseses.");
+        $output->writeln("Processed " . $counter . " positions");
+        return  Command::SUCCESS;
     }
-
 }
