@@ -15,14 +15,17 @@ namespace con4gis\TrackingBundle\Command;
 
 use con4gis\CoreBundle\Classes\C4GUtils;
 use con4gis\MapsBundle\Resources\contao\models\C4gMapProfilesModel;
+use con4gis\MapsBundle\Resources\contao\models\C4gMapSettingsModel;
 use con4gis\TrackingPortalBundle\Resources\contao\models\C4gTrackingPortalPositionsModel;
 use Contao\Database;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpClient\HttpClient;
 
 /**
  * Class AddressTranslationCommand
@@ -34,9 +37,12 @@ class AddressTranslationCommand extends Command
 {
     private ContaoFramework $framework;
     private Database $db;
-    public function __construct(ContaoFramework $framework)
+    private LoggerInterface $logger;
+
+    public function __construct(ContaoFramework $framework, LoggerInterface $logger)
     {
         $this->framework = $framework;
+        $this->logger = $logger;
         if (!$this->framework->isInitialized()) {
             $this->framework->initialize();
         }
@@ -63,8 +69,8 @@ class AddressTranslationCommand extends Command
         $profileId = $arrSettings['defaultprofile'];
         if (!$profileId) {
             // abort when no profile was found
-            $output->writeln("No profile found in the settings! Aborting...");
-            return Command::INVALID;
+            $this->infoLog("No profile found in the settings! Aborting...", $output);
+            return 1;
         }
         $objMapsProfile = C4gMapProfilesModel::findBy('id', $profileId);
         if ($objMapsProfile) {
@@ -79,18 +85,18 @@ class AddressTranslationCommand extends Command
             $chunksize = intval($chunksize);
         }
         $counter = 0;
-        // get position data without addresses
-        $arrPositions = $this->db->prepare("SELECT DISTINCT latitude, longitude FROM tl_c4g_tracking_positions WHERE COALESCE(address, '') = '' AND serverTstamp > 1688162400 LIMIT $chunksize")
-            ->execute()->fetchAllAssoc();
-        $output->writeln("Anzahl datensätze ist " . count($arrPositions));
+        // minimum tstamp value where positions will be processed
+        $thresholdTimestamp = 1704121931;
+        // get position data where the address is shorter than 10 characters -> probably broken address string
+        $arrPositions = $this->db->prepare("SELECT DISTINCT latitude, longitude FROM tl_c4g_tracking_positions WHERE (address = '' OR (LENGTH(address) < 9 AND address LIKE '%,%')) AND serverTstamp > ? LIMIT ?")
+            ->execute($thresholdTimestamp, $chunksize)->fetchAllAssoc();
+        $this->infoLog("Anzahl datensätze ist " . count($arrPositions), $output);
         $model = new C4gTrackingPortalPositionsModel();
         foreach ($arrPositions as $key => $position) {
             if ($position['latitude'] && $position['longitude']) {
-                    $address = C4gTrackingPortalPositionsModel::lookupCache($this->db, $position['latitude'], $position['longitude']);
-                    if ($address == 'not cached') {
-                        $address =  C4GUtils::reverseGeocode([$position['longitude'], $position['latitude']], true);
-                    }
-                if ($address) {
+                $address = $this->reverseGeocode([$position['longitude'], $position['latitude']], true);
+
+                if ($address && is_array($address)) {
                     $strAddress =  '';
                     $strAddress .=  $address['street'];
                     if (!$anonymous) {
@@ -101,17 +107,63 @@ class AddressTranslationCommand extends Command
                     $position['address'] = $strAddress;
                 }
             }
+
             if ($position['address'] === "") {
-                $output->writeln("Could not convert coordinates to address for position (" . $position['longitude'] . " , " . $position['latitude'] . ")");
-            } else {
+                $this->infoLog("Could not convert coordinates to address for position (" . $position['longitude'] . " , " . $position['latitude'] . ")", $output);
+            } else if ($position['address'] !== null && is_string($position['address'])) {
                 // update database
-                $result = $this->db->prepare("UPDATE tl_c4g_tracking_positions SET address=? WHERE longitude =? AND latitude =? AND address=''")->execute($position['address'], $position['longitude'], $position['latitude']);
-                $output->writeln("Updated address for position (" . $position['longitude'] . " , " . $position['latitude'] . ")");
+                $this->infoLog("Determined address: " . $position['address'], $output);
+                $result = $this->db->prepare("UPDATE tl_c4g_tracking_positions SET address=? WHERE longitude =? AND latitude =?")->execute($position['address'], $position['longitude'], $position['latitude']);
+                $this->infoLog("Updated address for position (" . $position['longitude'] . " , " . $position['latitude'] . ")", $output);
                 $counter ++;
+            } else {
+                $this->logger->error("Got Address '" . $position['address'] . "' which is not a valid address string.");
             }
         }
-        $output->writeln("Translated adDresseses.");
-        $output->writeln("Processed " . $counter . " positions");
-        return  Command::SUCCESS;
+        $this->infoLog("Translated addresses.", $output);
+        $this->infoLog("Processed " . $counter . " positions", $output);
+        return 0;
+    }
+
+    private function reverseGeocode($coordinates, $getArray)
+    {
+        $settings = C4gMapSettingsModel::findOnly();
+        if ($settings->con4gisIoUrl && $settings->con4gisIoKey) {
+            $searchUrl = rtrim($settings->con4gisIoUrl, '/') . '/';
+            $searchUrl .= 'reverse.php?key=' . $settings->con4gisIoKey;
+            $searchUrl .= '&lon=' . $coordinates[0] . '&lat=' . $coordinates[1] . '&format=json';
+
+            $headers = [];
+            if ($_SERVER['HTTP_REFERER']) {
+                $headers['Referer'] = $_SERVER['HTTP_REFERER'];
+            }
+            if ($_SERVER['HTTP_USER_AGENT']) {
+                $headers['User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
+            }
+            $client = HttpClient::create([
+                'headers' => $headers,
+            ]);
+            try {
+                $response = $client->request('GET', $searchUrl, ['timeout' => 2]);
+                $statusCode = $response->getStatusCode();
+                if ($response && $response->getStatusCode() === 200) {
+                    $response = $response->getContent();
+                    $response = \GuzzleHttp\json_decode($response, true);
+                    if ($getArray) {
+                        return $response['address'];
+                    } else {
+                        return $response['display_name'];
+                    }
+                }
+            } catch (\Exception $exception) {
+                $this->logger->error($exception->getMessage());
+                return false;
+            }
+        }
+    }
+
+    private function infoLog(string $message, OutputInterface $output)
+    {
+        $output->writeln(date('d.m.Y H:i:s') . ': ' . $message);
     }
 }

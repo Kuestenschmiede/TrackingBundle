@@ -11,7 +11,7 @@ services:
             - { name: 'console.command', command: 'tracking:translate-addresses' }
         arguments:
             - '@contao.framework'
-                
+            - '@logger'
 
     tracking.onPerformSearchDoIt:
         class: con4gis\TrackingBundle\Classes\Listener\PerformSearchListener
