@@ -39,6 +39,8 @@ class AddressTranslationCommand extends Command
     private Database $db;
     private LoggerInterface $logger;
 
+    private $geocodeMap = [];
+
     public function __construct(ContaoFramework $framework, LoggerInterface $logger)
     {
         $this->framework = $framework;
@@ -91,7 +93,7 @@ class AddressTranslationCommand extends Command
         $arrPositions = $this->db->prepare("SELECT DISTINCT latitude, longitude, tstamp FROM tl_c4g_tracking_positions WHERE (address = '' OR (LENGTH(address) < 9 AND address LIKE '%,%')) AND serverTstamp > ? ORDER BY `tstamp` DESC LIMIT ?")
             ->execute($thresholdTimestamp, $chunksize)->fetchAllAssoc();
         $this->infoLog("Anzahl datensätze ist " . count($arrPositions), $output);
-        $model = new C4gTrackingPortalPositionsModel();
+
         foreach ($arrPositions as $key => $position) {
             if ($position['latitude'] && $position['longitude']) {
                 $address = $this->reverseGeocode([$position['longitude'], $position['latitude']], true);
@@ -113,8 +115,11 @@ class AddressTranslationCommand extends Command
             } else if ($position['address'] !== null && is_string($position['address'])) {
                 // update database
                 $this->infoLog("Determined address: " . $position['address'], $output);
-                $result = $this->db->prepare("UPDATE tl_c4g_tracking_positions SET address=? WHERE longitude =? AND latitude =?")->execute($position['address'], $position['longitude'], $position['latitude']);
-                $this->infoLog("Updated address for position (" . $position['longitude'] . " , " . $position['latitude'] . ")", $output);
+                // update address for similar positions as well
+                $tmpLon = number_format(floatval($position['longitude']), 4, ".", "") . "%";
+                $tmpLat = number_format(floatval($position['latitude']), 4, ".", "") . "%";
+                $result = $this->db->prepare("UPDATE tl_c4g_tracking_positions SET address=? WHERE longitude LIKE ? AND latitude LIKE ? AND address = ''")->execute($position['address'], $tmpLon, $tmpLat);
+                $this->infoLog("Updated address for position (" . $position['longitude'] . " , " . $position['latitude'] . ") (".$result->affectedRows." Datensätze angepasst).", $output);
                 $counter ++;
             } else {
                 $this->logger->error("Got Address '" . $position['address'] . "' which is not a valid address string.");
@@ -127,6 +132,18 @@ class AddressTranslationCommand extends Command
 
     private function reverseGeocode($coordinates, $getArray)
     {
+        $lon = $coordinates[0];
+        $lon = number_format(floatval($lon), 4, ".", "");
+        $lat = $coordinates[1];
+        $lat = number_format(floatval($lat), 4, ".", "");
+        $key = $lon. "|" . $lat;
+
+        // build up map in memory for translated addresses
+        // any position that is nearby (4 decimals precision) will use the already calculated address in the map
+        if ($this->geocodeMap[$key]) {
+            return $this->geocodeMap[$key];
+        }
+
         $settings = C4gMapSettingsModel::findOnly();
         if ($settings->con4gisIoUrl && $settings->con4gisIoKey) {
             $searchUrl = rtrim($settings->con4gisIoUrl, '/') . '/';
@@ -149,11 +166,19 @@ class AddressTranslationCommand extends Command
                 if ($response && $response->getStatusCode() === 200) {
                     $response = $response->getContent();
                     $response = \GuzzleHttp\json_decode($response, true);
+
                     if ($getArray) {
-                        return $response['address'];
+                        $result = $response['address'];
                     } else {
-                        return $response['display_name'];
+                        $result = $response['display_name'];
                     }
+
+                    // store address into memory if not empty
+                    if ($result !== "") {
+                        $this->geocodeMap[$key] = $result;
+                    }
+
+                    return $result;
                 }
             } catch (\Exception $exception) {
                 $this->logger->error($exception->getMessage());
