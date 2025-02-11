@@ -13,6 +13,7 @@
 namespace con4gis\TrackingBundle\Classes;
 
 use con4gis\MapsBundle\Resources\contao\models\C4gMapsModel;
+use Contao\Input;
 
 /**
  * Class TrackingService
@@ -30,11 +31,11 @@ class TrackingService extends \Controller
         }
     }
 
-    public function generate($method)
+    public function generate(string $method)
     {
         \System::loadLanguageFile('tl_c4g_tracking');
 
-        $strMethod = 'tracking' . ucfirst(\Input::get('method'));
+//        $strMethod = 'tracking' . ucfirst(\Input::get('method'));
         $method = 'tracking' . ucfirst($method);
         if (method_exists($this, $method)) {
             if ($this->$method()) {
@@ -42,21 +43,22 @@ class TrackingService extends \Controller
             }
 
             return $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['method_error'] . $strMethod);
-        } elseif (method_exists($this, $strMethod)) {
-            if ($this->$strMethod()) {
-                return $this->arrReturn;
-            }
-
-            return $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['method_error'] . $strMethod);
         }
+//        elseif (method_exists($this, $strMethod)) {
+//            if ($this->$strMethod()) {
+//                return $this->arrReturn;
+//            }
+//
+//            return $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['method_error'] . $strMethod);
+//        }
 
         return false;
     }
 
     private function trackingGetLive()
     {
-        if (\Input::get('maps')) {
-            $intMapsItem = \Input::get('maps');
+        if (Input::get('maps')) {
+            $intMapsItem = Input::get('maps');
         }
 
         $this->import('Database');
@@ -92,7 +94,7 @@ class TrackingService extends \Controller
         } else {
             // Fallback: keine weiteren Einstellungen -> alle Geräte mit Positionsdaten
             $objPositions = $this->Database->prepare('SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0 ORDER BY tl_c4g_tracking_devices.name ASC')
-              ->execute();
+                ->execute();
         }
 
         if ($objPositions->numRows) {
@@ -107,6 +109,9 @@ class TrackingService extends \Controller
                     } else {
                         $locstyle = $objMap->ignitionStatusStyleOff;
                     }
+                }
+                if (!$objPositions->longitude || !$objPositions->latitude) {
+                    continue;
                 }
                 $arrFeatures[] = [
                     'type' => 'Feature',
@@ -129,11 +134,10 @@ class TrackingService extends \Controller
                 ];
                 // Todo: alle Daten im properties-objekt bereit stellen
             }
-            $arrReturn = [];
-            $arrReturn = json_encode([
+            $arrReturn = [
                 'type' => 'FeatureCollection',
                 'features' => $arrFeatures,
-            ]);
+            ];
             $this->arrReturn = $arrReturn;
 
             return true;

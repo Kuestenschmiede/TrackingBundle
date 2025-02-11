@@ -35,10 +35,10 @@ class TrackingFrontend extends \Frontend
     public function __construct()
     {
         parent::__construct();
-        if (FE_USER_LOGGED_IN) {
+//        if (FE_USER_LOGGED_IN) {
             $this->import('FrontendUser', 'User');
             $this->User->authenticate();
-        }
+//        }
     }
 
     public function getInfoWindowContent($strTable, $intId, $arrData)

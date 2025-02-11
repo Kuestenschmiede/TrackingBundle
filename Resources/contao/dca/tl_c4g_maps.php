@@ -56,6 +56,8 @@ $GLOBALS['TL_DCA']['tl_c4g_maps']['subpalettes']['useIgnitionStatusStyle'] = 'ig
  *
  */
 
+$mapsCb = \con4gis\MapsBundle\Classes\Contao\Callbacks\TlC4gMaps::class;
+
 $GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['liveTrackingDevices'] = array
 (
   'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_maps']['liveTrackingDevices'],
@@ -96,11 +98,11 @@ $GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['filterLocationStyle'] = array
     'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_maps']['filterLocationStyle'],
     'exclude'                 => true,
     'inputType'               => 'select',
-    'options_callback'        => array('tl_c4g_maps','getLocStyles'),
+    'options_callback'        => array($mapsCb,'getLocStyles'),
     'eval'                    => array('tl_class'=>'w50'),
     'wizard' => array
     (
-        array('tl_c4g_maps', 'editLocationStyle')
+        array($mapsCb, 'editLocationStyle')
     ),
     'sql'                     => "int(10) unsigned NOT NULL default '0'"
 );
@@ -191,11 +193,11 @@ $GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['ignitionStatusStyleOn'] = array
     'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_maps']['ignitionStatusStyleOn'],
     'exclude'                 => true,
     'inputType'               => 'select',
-    'options_callback'        => array('tl_c4g_maps','getLocStyles'),
+    'options_callback'        => array($mapsCb,'getLocStyles'),
     'eval'                    => array('tl_class'=>'w50'),
     'wizard' => array
     (
-        array('tl_c4g_maps', 'editLocationStyle')
+        array($mapsCb, 'editLocationStyle')
     ),
     'sql'                     => "int(10) unsigned NOT NULL default '0'"
 );
@@ -204,11 +206,11 @@ $GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['ignitionStatusStyleOff'] = array
     'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_maps']['ignitionStatusStyleOff'],
     'exclude'                 => true,
     'inputType'               => 'select',
-    'options_callback'        => array('tl_c4g_maps','getLocStyles'),
+    'options_callback'        => array($mapsCb,'getLocStyles'),
     'eval'                    => array('tl_class'=>'w50'),
     'wizard' => array
     (
-        array('tl_c4g_maps', 'editLocationStyle')
+        array($mapsCb, 'editLocationStyle')
     ),
     'sql'                     => "int(10) unsigned NOT NULL default '0'"
 );
@@ -221,7 +223,7 @@ $GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['ignitionStatusStyleOff'] = array
  * @author    Janosch Oltmanns
  * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2011 - 2018
  */
-class tl_c4g_maps_tracking extends Backend
+class tl_c4g_maps_tracking extends \Contao\Backend
 {
 
     /**

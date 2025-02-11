@@ -24,3 +24,13 @@ services:
         class: con4gis\TrackingBundle\Classes\Listener\LoadMapDataListener
         tags:
             - { name: kernel.event_listener, event: maps.mapdata.load, method: onLoadMapDataDoIt, priority: 6900 }
+
+
+    con4gis\TrackingBundle\Controller\TrackingController:
+        class: con4gis\TrackingBundle\Controller\TrackingController
+        public: true
+        calls:
+            - setContainer: [ '@service_container' ]
+        tags:
+            - controller.service_arguments
+            - container.service_subscriber
