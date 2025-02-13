@@ -42,7 +42,7 @@ class TrackingService extends \Controller
                 return $this->arrReturn;
             }
 
-            return $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['method_error'] . $strMethod);
+            return $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['method_error'] . $method);
         }
 //        elseif (method_exists($this, $strMethod)) {
 //            if ($this->$strMethod()) {

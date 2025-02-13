@@ -17,6 +17,7 @@ use con4gis\MapsBundle\Resources\contao\models\C4gMapsModel;
 use con4gis\TrackingBundle\Resources\contao\models\C4gTrackingDevicesModel;
 use con4gis\TrackingBundle\Resources\contao\models\C4gTrackingPositionsModel;
 use Contao\System;
+use FrontendTemplate;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -134,7 +135,7 @@ class TrackingFrontend extends \Frontend
                     }
 
                     if ($objLayer->popupType == 'template') {
-                        $objPopupTemplate = new \FrontendTemplate($objLayer->popupTemplate);
+                        $objPopupTemplate = new FrontendTemplate($objLayer->popupTemplate);
                         $objPopupTemplate->setData($arrTemplateData);
                         $objLayer->popup_info = $objPopupTemplate->parse();
                         $objLayer->popup_info = $this->replaceInsertTags($objLayer->popup_info);
@@ -189,6 +190,7 @@ class TrackingFrontend extends \Frontend
             $arrData = [];
             $arrData['excludeFromSingleLayer'] = true;
             $arrData['async_content'] = 5;
+            $arrData['popup_share'] = $child['popup_share'];
 
             switch ($child['type']) {
                 case 'tPois':
