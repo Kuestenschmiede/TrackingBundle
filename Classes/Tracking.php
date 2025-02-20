@@ -12,13 +12,17 @@
  */
 namespace con4gis\TrackingBundle\Classes;
 
+use Contao\Controller;
+use Contao\Database;
+use Contao\Frontend;
+use Contao\StringUtil;
 use Contao\System;
 
 /**
  * Class Tracking
  * @package c4g
  */
-class Tracking extends \Controller
+class Tracking extends Controller
 {
     public static function setNewPosition($strParentTable, $dblLatitude, $dblLongitude, $longAccuracy = 0, $longSpeed = 0, $timeStamp = false, $arrAdditionalData = [])
     {
@@ -35,7 +39,7 @@ class Tracking extends \Controller
       'speed' => $longSpeed,
     ];
 
-        $objDatabase = \Database::getInstance();
+        $objDatabase = Database::getInstance();
 
         $blnHasDevice = false;
         //$blnHasTrack = false;
@@ -72,13 +76,13 @@ class Tracking extends \Controller
 
         if ($blnHasDevice && $intDeviceId > 0) {
             // UPDATE DEVICE TABLE REFERENCE
-            \Database::getInstance()->prepare('UPDATE tl_c4g_tracking_devices SET lastPositionId=? WHERE id=?')
+            Database::getInstance()->prepare('UPDATE tl_c4g_tracking_devices SET lastPositionId=? WHERE id=?')
                               ->execute($objPosition->id, $intDeviceId);
         }
 
         if ($arrAdditionalData['trackUuid']) {
             // UPDATE TRACK TABLE REFERENCE
-            \Database::getInstance()->prepare('UPDATE tl_c4g_tracking_tracks SET lastPositionId=? WHERE uuid=?')
+            Database::getInstance()->prepare('UPDATE tl_c4g_tracking_tracks SET lastPositionId=? WHERE uuid=?')
           ->execute($objPosition->id, $arrAdditionalData['trackUuid']);
         }
 
@@ -170,7 +174,7 @@ class Tracking extends \Controller
 
     public static function getTrackingConfig()
     {
-        $objRootPage = \Frontend::getRootPageFromUrl();
+        $objRootPage = Frontend::getRootPageFromUrl();
 
         $arrTrackingConfig = [
       'hasTrackingConfiguration' => false,
@@ -187,8 +191,8 @@ class Tracking extends \Controller
                 foreach ($arrTrackingInformation as $key => $value) {
                     $arrTrackingConfig[$key] = self::manipulateTrackingInfo($key, $value);
 
-                    if (is_array(deserialize($arrTrackingConfig[$key]))) {
-                        $arrTrackingConfig[$key] = deserialize($arrTrackingConfig[$key]);
+                    if (is_array(StringUtil::deserialize($arrTrackingConfig[$key]))) {
+                        $arrTrackingConfig[$key] = StringUtil::deserialize($arrTrackingConfig[$key]);
                     }
                 }
             } else {
@@ -219,7 +223,7 @@ class Tracking extends \Controller
     {
         // 12 = Zündung an
         // 13 = Zündung aus
-        $objDatabase = \Database::getInstance();
+        $objDatabase = Database::getInstance();
         $objIgnitionInfo = $objDatabase->prepare('SELECT boxStatus FROM tl_c4g_tracking_positions WHERE device=? AND boxStatus >= 12 AND boxStatus <= 13 ORDER BY tstamp DESC')
                                    ->limit(1)
                                    ->execute($indDeviceId);
@@ -294,7 +298,7 @@ class Tracking extends \Controller
         // Execute post
         $result = curl_exec($ch);
         if ($result === false) {
-            $logger = \System::getContainer()->get('logger');
+            $logger = System::getContainer()->get('logger');
             $logger->error('Failed while sending push message via curl.');
             //CakeLog::write('log','Gc,notofication failed. Id:' . $id . '; Msg: ' . curl_error($ch));
       //die('Curl failed: ' . curl_error($ch));
