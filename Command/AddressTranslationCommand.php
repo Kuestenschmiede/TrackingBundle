@@ -90,8 +90,8 @@ class AddressTranslationCommand extends Command
         // minimum tstamp value where positions will be processed
         $thresholdTimestamp = 1704121931;
         // get position data where the address is shorter than 10 characters AND has comma -> probably broken address string
-        $arrPositions = $this->db->prepare("SELECT DISTINCT latitude, longitude, tstamp FROM tl_c4g_tracking_positions WHERE (address = '' OR (LENGTH(address) < 9 AND address LIKE '%,%')) AND serverTstamp > ? ORDER BY `tstamp` DESC LIMIT ?")
-            ->execute($thresholdTimestamp, $chunksize)->fetchAllAssoc();
+        $arrPositions = $this->db->prepare("SELECT DISTINCT latitude, longitude, tstamp FROM tl_c4g_tracking_positions WHERE (address = '' OR (LENGTH(address) < 9 AND address LIKE '%,%')) AND serverTstamp > ? ORDER BY `tstamp` DESC LIMIT " . $chunksize)
+            ->execute($thresholdTimestamp)->fetchAllAssoc();
         $this->infoLog("Anzahl datensätze ist " . count($arrPositions), $output);
 
         foreach ($arrPositions as $key => $position) {

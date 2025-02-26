@@ -5,6 +5,13 @@ tracking_service:
         _controller: con4gis\TrackingBundle\Controller\TrackingController::trackingAction
     methods: [GET, POST]
 
+tracking_service_new_position:
+    path: /con4gis/api/trackingService/newPositionFromBox
+    defaults:
+        _scope: frontend
+        _controller: con4gis\TrackingBundle\Controller\TrackingController::trackingActionNewPositionFromBox
+    methods: [GET, POST]
+
 tracking_service_getLive:
     path: /con4gis/api/trackingService/getLive/
     defaults:

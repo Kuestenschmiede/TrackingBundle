@@ -191,6 +191,7 @@ class TrackingFrontend extends \Frontend
             $arrData['excludeFromSingleLayer'] = true;
             $arrData['async_content'] = 5;
             $arrData['popup_share'] = $child['popup_share'];
+            $arrData['activeForBaselayers'] = $child['activeForBaselayers'];
 
             switch ($child['type']) {
                 case 'tPois':

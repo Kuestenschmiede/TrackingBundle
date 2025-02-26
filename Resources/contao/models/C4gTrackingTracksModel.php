@@ -17,11 +17,13 @@
 namespace con4gis\TrackingBundle\Resources\contao\models;
 
 
+use Contao\Model;
+
 /**
  * Class C4gTrackingTracksModel
  * @package c4g
  */
-class C4gTrackingTracksModel extends \Model
+class C4gTrackingTracksModel extends Model
 {
 
 	/**

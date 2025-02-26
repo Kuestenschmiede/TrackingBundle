@@ -34,3 +34,6 @@ services:
         tags:
             - controller.service_arguments
             - container.service_subscriber
+        arguments:
+            - "@contao.framework"
+            - "@logger"

@@ -17,6 +17,8 @@
 namespace con4gis\TrackingBundle\Resources\contao\models;
 
 
+use Contao\Model;
+
 /**
  * Reads and writes news archives
  *
@@ -24,7 +26,7 @@ namespace con4gis\TrackingBundle\Resources\contao\models;
  * @author    Janosch Oltmanns
  * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2011 - 2018
  */
-class C4gTrackingDevicesModel extends \Model
+class C4gTrackingDevicesModel extends Model
 {
 
 	/**

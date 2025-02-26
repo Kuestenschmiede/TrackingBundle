@@ -13,7 +13,9 @@
 namespace con4gis\TrackingBundle\Controller;
 
 
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Input;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,20 +25,61 @@ use con4gis\TrackingBundle\Classes\TrackingService;
 class TrackingController extends AbstractController
 {
 
+    private LoggerInterface $logger;
+
+    public function __construct(ContaoFramework $framework, LoggerInterface $logger)
+    {
+        $framework->initialize();
+        $this->logger = $logger;
+    }
+
     public function trackingAction(Request $request)
     {
-        $debugData = [];
-        $arrParams = array('api_key','date','imei','latitude','longitude','phoneNo','speed','mileage','driverId','temperature','status');
-        foreach ($arrParams as $param) {
-            $debugData[$param] = Input::post($param);
-            if (!$debugData[$param]) {
-                $debugData[$param] = Input::get($param);
+        try {
+            $debugData = [];
+            $arrParams = array('api_key','date','imei','latitude','longitude','phoneNo','speed','mileage','driverId','temperature','status');
+            foreach ($arrParams as $param) {
+                $debugData[$param] = Input::post($param);
+                if (!$debugData[$param]) {
+                    $debugData[$param] = Input::get($param);
+                }
             }
+            $query = $request->query->all();
+    //        return new Response($query['method']);
+
+            $trackingService = new TrackingService();
+
+
+            $response = $trackingService->generate($query['method']);
+        } catch (\Throwable $exception) {
+            $this->logger->error($exception->getMessage());
         }
-        $query = $request->query->all();
-//        return new Response($query['method']);
-        $trackingService = new TrackingService();
-        $response = $trackingService->generate($query['method']);
+//        $response = $trackingService->generate("");
+//        $response = \GuzzleHttp\json_decode($response, true);
+        return JsonResponse::create($response);
+    }
+
+    public function trackingActionNewPositionFromBox(Request $request)
+    {
+        try {
+            $debugData = [];
+            $arrParams = array('api_key','date','imei','latitude','longitude','phoneNo','speed','mileage','driverId','temperature','status');
+            foreach ($arrParams as $param) {
+                $debugData[$param] = Input::post($param);
+                if (!$debugData[$param]) {
+                    $debugData[$param] = Input::get($param);
+                }
+            }
+            $query = $request->query->all();
+            //        return new Response($query['method']);
+
+            $trackingService = new TrackingService();
+
+
+            $response = $trackingService->generate("newPositionFromBox");
+        } catch (\Throwable $exception) {
+            $this->logger->error($exception->getMessage());
+        }
 //        $response = $trackingService->generate("");
 //        $response = \GuzzleHttp\json_decode($response, true);
         return JsonResponse::create($response);

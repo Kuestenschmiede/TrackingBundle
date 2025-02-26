@@ -94,7 +94,7 @@ class Tracking extends Controller
         echo self::setNewPosition('test', 12, 12, 0, 0, false, ['pid' => 'dfdf', 'test' => 'dfgdfg']);
     }
 
-    public static function setNewPoi($intConfiguration, $intMemberId, $strVisibility = 'privat', $strName = '', $intTrackUuid = 0, $timeStamp, $arrPositionData = [])
+    public static function setNewPoi($intConfiguration, $intMemberId, $strVisibility = 'privat', $strName = '', $intTrackUuid = 0, $timeStamp = 0, $arrPositionData = [])
     {
         $strUuid = uniqid('', true);
         $timeStamp = $timeStamp ? $timeStamp : time();
@@ -166,7 +166,7 @@ class Tracking extends Controller
         $arrTrackingTrack['trackId'] = $objTrack->id;
         $arrTrackingTrack['trackUuid'] = $strUuid;
 
-        $packages = System::getContainer()->getParameter('kernel.packages');
+        $packages = System::getContainer()->getParameter('kernel.bundles');
         $arrTrackingTrack['version'] = $packages['con4gis/tracking'];
 
         return $arrTrackingTrack;
@@ -202,7 +202,7 @@ class Tracking extends Controller
             $arrTrackingConfig['message'] = 'no tracking configuration';
         }
 
-        $packages = System::getContainer()->getParameter('kernel.packages');
+        $packages = System::getContainer()->getParameter('kernel.bundles');
         $arrTrackingConfig['version'] = $packages['con4gis/tracking'];
 
         return $arrTrackingConfig;
