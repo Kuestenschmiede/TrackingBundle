@@ -74,6 +74,7 @@ class AddressTranslationCommand extends Command
             $this->infoLog("No profile found in the settings! Aborting...", $output);
             return 1;
         }
+        $anonymous = false;
         $objMapsProfile = C4gMapProfilesModel::findBy('id', $profileId);
         if ($objMapsProfile) {
             if ($objMapsProfile->geopicker_anonymous) {
@@ -87,8 +88,8 @@ class AddressTranslationCommand extends Command
             $chunksize = intval($chunksize);
         }
         $counter = 0;
-        // minimum tstamp value where positions will be processed
-        $thresholdTimestamp = 1704121931;
+        // minimum tstamp value where positions will be processed (1.10.2025)
+        $thresholdTimestamp = 1759276800;
         // get position data where the address is shorter than 10 characters AND has comma -> probably broken address string
         $arrPositions = $this->db->prepare("SELECT DISTINCT latitude, longitude, tstamp FROM tl_c4g_tracking_positions WHERE (address = '' OR (LENGTH(address) < 9 AND address LIKE '%,%')) AND serverTstamp > ? ORDER BY `tstamp` DESC LIMIT " . $chunksize)
             ->execute($thresholdTimestamp)->fetchAllAssoc();
@@ -100,12 +101,12 @@ class AddressTranslationCommand extends Command
 
                 if ($address && is_array($address)) {
                     $strAddress =  '';
-                    $strAddress .=  $address['street'];
-                    if (!$anonymous) {
-                        $strAddress .= $address['housenumber'] ? " " . $address['housenumber'] : "";
+                    $strAddress .= array_key_exists('street', $address) ? $address['street'] : "";
+                    if (!isset($anonymous) || (!$anonymous)) {
+                        $strAddress .= array_key_exists('housenumber', $address) ? " " . $address['housenumber'] : "";
                     }
-                    $strAddress .= $address['postalcode'] ? ", " . $address['postalcode'] : "";
-                    $strAddress .= $address['localadmin'] ? " " . $address['localadmin'] : "";
+                    $strAddress .= array_key_exists('postalcode', $address) ? ", " . $address['postalcode'] : "";
+                    $strAddress .= array_key_exists('localadmin', $address) ? " " . $address['localadmin'] : "";
                     $position['address'] = $strAddress;
                 }
             }
@@ -119,8 +120,8 @@ class AddressTranslationCommand extends Command
                 $tmpLon = number_format(floatval($position['longitude']), 4, ".", "") . "%";
                 $tmpLat = number_format(floatval($position['latitude']), 4, ".", "") . "%";
                 $result = $this->db->prepare("UPDATE tl_c4g_tracking_positions SET address=? WHERE longitude LIKE ? AND latitude LIKE ? AND address = ''")->execute($position['address'], $tmpLon, $tmpLat);
-                $this->infoLog("Updated address for position (" . $position['longitude'] . " , " . $position['latitude'] . ") (".$result->affectedRows." Datensätze angepasst).", $output);
-                $counter ++;
+                $this->infoLog("Updated address for position (" . $tmpLon . " , " . $tmpLat . ") (".$result->affectedRows." Datensätze angepasst).", $output);
+                $counter++;
             } else {
                 $this->logger->error("Got Address '" . $position['address'] . "' which is not a valid address string.");
             }
@@ -140,7 +141,7 @@ class AddressTranslationCommand extends Command
 
         // build up map in memory for translated addresses
         // any position that is nearby (4 decimals precision) will use the already calculated address in the map
-        if ($this->geocodeMap[$key]) {
+        if (array_key_exists($key, $this->geocodeMap) && $this->geocodeMap[$key]) {
             return $this->geocodeMap[$key];
         }
 
@@ -151,10 +152,10 @@ class AddressTranslationCommand extends Command
             $searchUrl .= '&lon=' . $coordinates[0] . '&lat=' . $coordinates[1] . '&format=json';
 
             $headers = [];
-            if ($_SERVER['HTTP_REFERER']) {
+            if (array_key_exists('HTTP_REFERER', $_SERVER) && $_SERVER['HTTP_REFERER']) {
                 $headers['Referer'] = $_SERVER['HTTP_REFERER'];
             }
-            if ($_SERVER['HTTP_USER_AGENT']) {
+            if (array_key_exists('HTTP_USER_AGENT', $_SERVER) && $_SERVER['HTTP_USER_AGENT']) {
                 $headers['User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
             }
             $client = HttpClient::create([

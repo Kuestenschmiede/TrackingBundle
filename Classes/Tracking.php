@@ -12,11 +12,14 @@
  */
 namespace con4gis\TrackingBundle\Classes;
 
+use con4gis\CoreBundle\Resources\contao\models\C4gLogModel;
+use con4gis\MapsBundle\Resources\contao\models\C4gMapSettingsModel;
 use Contao\Controller;
 use Contao\Database;
 use Contao\Frontend;
 use Contao\StringUtil;
 use Contao\System;
+use Symfony\Component\HttpClient\HttpClient;
 
 /**
  * Class Tracking
@@ -30,14 +33,14 @@ class Tracking extends Controller
         $time = $timeStamp ? $timeStamp : $varTime;//time();
 
         $arrSet = [
-      'pTable' => $strParentTable,
-      'tstamp' => $time,
-      'serverTstamp' => $varTime,
-      'latitude' => $dblLatitude,
-      'longitude' => $dblLongitude,
-      'accuracy' => $longAccuracy,
-      'speed' => $longSpeed,
-    ];
+          'pTable' => $strParentTable,
+          'tstamp' => $time,
+          'serverTstamp' => $varTime,
+          'latitude' => $dblLatitude,
+          'longitude' => $dblLongitude,
+          'accuracy' => $longAccuracy,
+          'speed' => $longSpeed,
+        ];
 
         $objDatabase = Database::getInstance();
 
@@ -71,6 +74,28 @@ class Tracking extends Controller
             }
         }
 
+        // address translation
+        //
+        try {
+            $address = self::reverseGeocode([$arrSet['longitude'], $arrSet['latitude']], true);
+
+            if ($address && is_array($address)) {
+                $strAddress =  '';
+                $strAddress .= array_key_exists('street', $address) ? $address['street'] : "";
+                $strAddress .= array_key_exists('housenumber', $address) ? " " . $address['housenumber'] : "";
+
+                $strAddress .= array_key_exists('postalcode', $address) ? ", " . $address['postalcode'] : "";
+                $strAddress .= array_key_exists('localadmin', $address) ? " " . $address['localadmin'] : "";
+
+                $arrSet['address'] = $strAddress;
+            } else {
+                $arrSet['address'] = "";
+            }
+        } catch (\Throwable $exception) {
+            C4gLogModel::addLogEntry("tracking", $exception->getMessage());
+            $arrSet['address'] = "";
+        }
+
         $objPosition = new \con4gis\TrackingBundle\Resources\contao\models\C4gTrackingPositionsModel();
         $objPosition->setRow($arrSet)->save();
 
@@ -87,6 +112,53 @@ class Tracking extends Controller
         }
 
         return $objPosition->id;
+    }
+
+    private static function reverseGeocode($coordinates, $getArray)
+    {
+        try {
+            $settings = C4gMapSettingsModel::findOnly();
+            if ($settings->con4gisIoUrl && $settings->con4gisIoKey) {
+                $searchUrl = rtrim($settings->con4gisIoUrl, '/') . '/';
+                $searchUrl .= 'reverse.php?key=' . $settings->con4gisIoKey;
+                $searchUrl .= '&lon=' . $coordinates[0] . '&lat=' . $coordinates[1] . '&format=json';
+
+                $headers = [];
+                if (array_key_exists('HTTP_REFERER', $_SERVER) && $_SERVER['HTTP_REFERER']) {
+                    $headers['Referer'] = $_SERVER['HTTP_REFERER'];
+                }
+                if (array_key_exists('HTTP_USER_AGENT', $_SERVER) && $_SERVER['HTTP_USER_AGENT']) {
+                    $headers['User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
+                }
+                $client = HttpClient::create([
+                    'headers' => $headers,
+                ]);
+                try {
+                    $response = $client->request('GET', $searchUrl, ['timeout' => 2]);
+                    $statusCode = $response->getStatusCode();
+                    if (($statusCode === 200)) {
+                        $response = $response->getContent();
+                        $response = \GuzzleHttp\json_decode($response, true);
+
+                        if ($getArray) {
+                            $result = $response['address'];
+                        } else {
+                            $result = $response['display_name'];
+                        }
+
+                        return $result;
+                    }
+                } catch (\Throwable $exception) {
+                    C4gLogModel::addLogEntry("tracking", $exception->getMessage());
+                    return "";
+                }
+            }
+
+            return "";
+        } catch(\Throwable $exception) {
+            C4gLogModel::addLogEntry("tracking", $exception->getMessage());
+            return "";
+        }
     }
 
     public static function setNewDevicePositions()
