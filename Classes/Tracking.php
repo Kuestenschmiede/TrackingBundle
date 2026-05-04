@@ -77,20 +77,43 @@ class Tracking extends Controller
         // address translation
         //
         try {
-            $address = self::reverseGeocode([$arrSet['longitude'], $arrSet['latitude']], true);
+            // number of decimals we can shorten to while still having good enough precision
+            $decimals = 6;
 
-            if ($address && is_array($address)) {
-                $strAddress =  '';
-                $strAddress .= array_key_exists('street', $address) ? $address['street'] : "";
-                $strAddress .= array_key_exists('housenumber', $address) ? " " . $address['housenumber'] : "";
+            $lookupLat = $arrSet['latitude'];
+            $lookupLon = $arrSet['longitude'];
 
-                $strAddress .= array_key_exists('postalcode', $address) ? ", " . $address['postalcode'] : "";
-                $strAddress .= array_key_exists('localadmin', $address) ? " " . $address['localadmin'] : "";
+            $cachedAddress = self::getStoredAddress($lookupLat, $lookupLon);
 
-                $arrSet['address'] = $strAddress;
+            if ($cachedAddress !== "") {
+                $arrSet['address'] = $cachedAddress;
             } else {
-                $arrSet['address'] = "";
+                $address = self::reverseGeocode([$arrSet['longitude'], $arrSet['latitude']], true);
+
+                if ($address && is_array($address)) {
+                    $strAddress =  '';
+                    $strAddress .= array_key_exists('street', $address) ? $address['street'] : "";
+                    $strAddress .= array_key_exists('housenumber', $address) ? " " . $address['housenumber'] : "";
+
+                    $strAddress .= array_key_exists('postalcode', $address) ? ", " . $address['postalcode'] : "";
+                    $strAddress .= array_key_exists('localadmin', $address) ? " " . $address['localadmin'] : "";
+
+                    $arrSet['address'] = $strAddress;
+
+                    $insertSql = "INSERT INTO tl_c4g_tracking_addresses %s";
+                    $params = [
+                        'tstamp' => time(),
+                        'latitude' => $arrSet['latitude'],
+                        'longitude' => $arrSet['longitude'],
+                        'address' => $strAddress
+                    ];
+                    Database::getInstance()->prepare($insertSql)
+                        ->set($params)->execute();
+                } else {
+                    $arrSet['address'] = "";
+                }
             }
+
         } catch (\Throwable $exception) {
             C4gLogModel::addLogEntry("tracking", $exception->getMessage());
             $arrSet['address'] = "";
@@ -112,6 +135,26 @@ class Tracking extends Controller
         }
 
         return $objPosition->id;
+    }
+
+    private static function getStoredAddress($lat, $lon)
+    {
+        try {
+            $sql = "SELECT address FROM tl_c4g_tracking_addresses WHERE latitude = ? AND longitude = ?";
+            $storedAddress = Database::getInstance()
+                ->prepare($sql)
+                ->execute($lat, $lon)
+                ->fetchAssoc();
+
+            if ($storedAddress) {
+                return $storedAddress['address'];
+            }
+
+            return "";
+        } catch (\Throwable $exception) {
+            C4gLogModel::addLogEntry("tracking", $exception->getMessage());
+            return "";
+        }
     }
 
     private static function reverseGeocode($coordinates, $getArray)
